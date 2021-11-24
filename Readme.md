@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Анастасия Бурдина](https://up.htmlacademy.ru/ecmascript/16/user/1920607).
-* Наставник: `Александра Яковина`.
+* Наставник: [Александра Яковина](https://htmlacademy.ru/profile/sashayakovyna).
 
 ---
 
