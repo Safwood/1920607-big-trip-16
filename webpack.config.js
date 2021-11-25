@@ -11,7 +11,7 @@ module.exports = {
         hot: false
     },
     module: {
-        rule: [
+        rules: [
             {
                 test: /\.js$/,
                 exclude: /(node_modules)/,
