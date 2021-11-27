@@ -55,14 +55,7 @@ export const getRandomPhotos = () => {
   return photos;
 };
 
-export const getIsFavourite = () => {
-  const randomCount = getRandomIntenger(0, 1);
-  if (randomCount) {
-    return true;
-  } else {
-    return false;
-  }
-};
+export const getIsFavourite = () => Boolean(getRandomIntenger(0, 1));
 
 export const countDuration = (start, finish) => {
   const durationInMinutes = dayjs(start).diff(dayjs(finish), 'minute');

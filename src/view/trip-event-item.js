@@ -14,12 +14,12 @@ export const createOffesTemplate = (offers) => (
 );
 
 export const createEventItemTemplate = (event) => {
-  const dayFrom = dayjs(event.startDate).format('MMM DD');
-  const dayFromWithYear = dayjs(event.startDate).format('YYYY-MM-DD');
-  const timeToWithDate = dayjs(event.finishDate).format('YYYY-MM-DDTHH:mm');
-  const timeFromWithDate = dayjs(event.startDate).format('YYYY-MM-DDTHH:mm');
-  const timeTo = dayjs(event.finishDate).format('HH:mm');
-  const timeFrom = dayjs(event.startDate).format('HH:mm');
+  const startDay = dayjs(event.startDate).format('MMM DD');
+  const startDayWithYear = dayjs(event.startDate).format('YYYY-MM-DD');
+  const finishTimeWithDate = dayjs(event.finishDate).format('YYYY-MM-DDTHH:mm');
+  const startTimeFromDate = dayjs(event.startDate).format('YYYY-MM-DDTHH:mm');
+  const finishTime = dayjs(event.finishDate).format('HH:mm');
+  const startTime = dayjs(event.startDate).format('HH:mm');
   const duration = countDuration(event.finishDate, event.startDate);
 
   const isFavouriteClassName = `event__favorite-btn ${event.isFavorite ? 'event__favorite-btn--active' : ''}`;
@@ -28,16 +28,16 @@ export const createEventItemTemplate = (event) => {
 
   return `<li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="${dayFromWithYear}">${dayFrom}</time>
+      <time class="event__date" datetime="${startDayWithYear}">${startDay}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${(event.type).toLowerCase()}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${event.type} ${event.destination}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${timeFromWithDate}">${timeFrom}</time>
+          <time class="event__start-time" datetime="${startTimeFromDate}">${startTime}</time>
           &mdash;
-          <time class="event__end-time" datetime="${timeToWithDate}"">${timeTo}</time>
+          <time class="event__end-time" datetime="${finishTimeWithDate}">${finishTime}</time>
         </p>
         <p class="event__duration">${duration}</p>
       </div>
