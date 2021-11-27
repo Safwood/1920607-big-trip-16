@@ -67,21 +67,16 @@ export const getIsFavourite = () => {
 }
 
 export const countDuration = (start, finish) => {
-    console.log('start', start)
-    console.log('finish', finish)
     const durationInMinutes = dayjs(start).diff(dayjs(finish), 'minute');
-    console.log('durationInMinutes', durationInMinutes)
+
     if(durationInMinutes < 60) {
-        console.log('durationInMinutes < 60', durationInMinutes < 60)
-        console.log(`${dayjs.duration(durationInMinutes, 'minute').format('mm')}M`)
         return `${dayjs.duration(durationInMinutes, 'minute').format('mm')}M`;
     }
+
     if(durationInMinutes >= 60 && durationInMinutes < (24*60)) {
-        console.log('durationInMinutes < (24*60)', durationInMinutes < (24*60))
-        console.log(`${dayjs.duration(durationInMinutes, 'minute').format('HH')}H ${dayjs.duration(durationInMinutes, 'minute').format('mm')}M`)
         return `${dayjs.duration(durationInMinutes, 'minute').format('HH')}H ${dayjs.duration(durationInMinutes, 'minute').format('mm')}M`;
     } 
-console.log('else', `${dayjs.duration(durationInMinutes, 'minute').format('DD')}D ${dayjs.duration(durationInMinutes, 'minute').format('HH')}H ${dayjs.duration(durationInMinutes, 'minute').format('mm')}M`)
+    
     return `${dayjs.duration(durationInMinutes, 'minute').format('DD')}D ${dayjs.duration(durationInMinutes, 'minute').format('HH')}H ${dayjs.duration(durationInMinutes, 'minute').format('mm')}M`;
 }
 
