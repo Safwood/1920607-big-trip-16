@@ -1,9 +1,9 @@
 import { countDuration } from '../utils';
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 export const createOffesTemplate = (offers) => (
   `<ul class="event__selected-offers">
-  ${offers.map((offer) => 
+  ${offers.map((offer) =>
     `<li class="event__offer">
     <span class="event__offer-title">${offer.title}</span>
     &plus;&euro;&nbsp;
@@ -11,7 +11,7 @@ export const createOffesTemplate = (offers) => (
   </li>`).join('')
   }
 </ul>`
-)
+);
 
 export const createEventItemTemplate = (event) => {
   const dayFrom = dayjs(event.startDate).format('MMM DD');
@@ -22,7 +22,7 @@ export const createEventItemTemplate = (event) => {
   const timeFrom = dayjs(event.startDate).format('HH:mm');
   const duration = countDuration(event.finishDate, event.startDate);
 
-  const isFavouriteClassName = `event__favorite-btn ${event.isFavorite ? 'event__favorite-btn--active' : ''}`
+  const isFavouriteClassName = `event__favorite-btn ${event.isFavorite ? 'event__favorite-btn--active' : ''}`;
 
   const offersTemplate = createOffesTemplate(event.offers);
 
@@ -56,5 +56,5 @@ export const createEventItemTemplate = (event) => {
         <span class="visually-hidden">Open event</span>
       </button>
     </div>
-  </li>`
+  </li>`;
 };

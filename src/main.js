@@ -17,7 +17,7 @@ export const renderPosition = {
   AFTEREND: 'afterend'
 };
 
-const events = Array.from({length: EVENT_COUNT}, generateEvent)
+const events = Array.from({length: EVENT_COUNT}, generateEvent);
 
 export const renderTemplate = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -27,7 +27,7 @@ const menuContainer = document.querySelector('.trip-controls__navigation');
 const tripFilterContainer = document.querySelector('.trip-controls__filters');
 const tripMain = document.querySelector('.trip-main');
 const tripEvents = document.querySelector('.trip-events');
-const totalPrice = countTotalSum(events)
+const totalPrice = countTotalSum(events);
 
 renderTemplate(menuContainer, createSiteMenuTemplate(), renderPosition.BEFORREEND);
 renderTemplate(tripFilterContainer, createTriptFilterTemplate(), renderPosition.BEFORREEND);

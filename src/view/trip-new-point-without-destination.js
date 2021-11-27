@@ -1,44 +1,36 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
-export const createOffersTemplate = (offers, type) => {
-  return `<div class="event__available-offers">
-  ${offers.map(offer => {
-    return `<div class="event__offer-selector">
+export const createOffersTemplate = (offers, type) => `<div class="event__available-offers">
+  ${offers.map((offer) => `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${offer.id}" type="checkbox" name="event-offer-${type}" checked>
     <label class="event__offer-label" for="event-offer-${type}-${offer.id}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
     </label>
-  </div>`
-  })}  
-</div>`
-}
-export const createPhotoListTemplate = (photos) => {
-  return `<div class="event__photos-tape">
-  ${photos.map((photo) => {
-    return `<img class="event__photo" src="${photo}" alt="Event photo">`
-  }).join('')}
-</div>`
-}
+  </div>`)}  
+</div>`;
+export const createPhotoListTemplate = (photos) => `<div class="event__photos-tape">
+  ${photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('')}
+</div>`;
 export const createTripNewEventTemplate = (event = {}) => {
   const {
-      destination = '',
-      type = '',
-      startDate = 0,
-      finishDate = 0,
-      price = 0,
-      offers = [],
-      photos = [], 
-      description = '',
+    destination = '',
+    type = '',
+    startDate = 0,
+    finishDate = 0,
+    price = 0,
+    offers = [],
+    photos = [],
+    description = '',
   } = event;
 
   const startDay = dayjs(startDate).format('DD/MM/YY');
   const finishDay = dayjs(finishDate).format('DD/MM/YY');
   const finishTime = dayjs(finishDate).format('HH:mm');
   const startTime = dayjs(startDate).format('HH:mm');
-  const photosTemplate = createPhotoListTemplate(photos)
-  const offersTemplate = createOffersTemplate(offers, type)
+  const photosTemplate = createPhotoListTemplate(photos);
+  const offersTemplate = createOffersTemplate(offers, type);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -148,5 +140,5 @@ export const createTripNewEventTemplate = (event = {}) => {
                   </section>
                 </section>
               </form>
-            </li>`
+            </li>`;
 };
