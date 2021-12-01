@@ -6,6 +6,47 @@ import { offersTypes } from './mock/events';
 
 dayjs.extend(duration);
 
+export const RenderPosition = {
+  BEFOREBEGIN: 'beforebegin',
+  AFTERBEGIN: 'afterbegin',
+  BEFORREEND: 'beforeend',
+  AFTEREND: 'afterend'
+};
+
+export const BLANK_EVENT = {
+  destination: '',
+  type: '',
+  startDate: 0,
+  finishDate: 0,
+  price: 0,
+  offers: [],
+  photos: [],
+  description: '',
+};
+
+export const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.BEFOREBEGIN:
+      container.before(element);
+      break;
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFORREEND:
+      container.append(element);
+      break;
+    case RenderPosition.AFTEREND:
+      container.after(element);
+      break;
+  }
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+  return newElement.firstChild;
+};
+
 export const getRandomIntenger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -14,7 +55,6 @@ export const getRandomIntenger = (a = 0, b = 1) => {
 };
 
 export const generateRandomDate = (eventType) => {
-  //использую минуты чтобы легче было установить рандомное время
   const randomMinutesIntervalFromToday = getRandomIntenger(15, 43200);
   const randomDurationTime = getRandomIntenger(15, possibleDurationTimeMinutes[eventType]);
 
@@ -75,6 +115,7 @@ export const generateEvent = () => {
   const eventType = generateEventType();
   const dates = generateRandomDate(eventType);
   countDuration(dates.eventStartDate, dates.eventFinishDate);
+
   return {
     destination: generateEventCity(),
     type: eventType,

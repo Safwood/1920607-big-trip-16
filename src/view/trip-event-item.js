@@ -1,7 +1,8 @@
 import { countDuration } from '../utils';
 import dayjs from 'dayjs';
+import { createElement } from '../utils';
 
-export const createOffesTemplate = (offers) => (
+const createOffersTemplate = (offers) => (
   `<ul class="event__selected-offers">
   ${offers.map((offer) =>
     `<li class="event__offer">
@@ -13,7 +14,7 @@ export const createOffesTemplate = (offers) => (
 </ul>`
 );
 
-export const createEventItemTemplate = (event) => {
+const createEventItemTemplate = (event) => {
   const startDay = dayjs(event.startDate).format('MMM DD');
   const startDayWithYear = dayjs(event.startDate).format('YYYY-MM-DD');
   const finishTimeWithDate = dayjs(event.finishDate).format('YYYY-MM-DDTHH:mm');
@@ -24,7 +25,7 @@ export const createEventItemTemplate = (event) => {
 
   const isFavouriteClassName = `event__favorite-btn ${event.isFavorite ? 'event__favorite-btn--active' : ''}`;
 
-  const offersTemplate = createOffesTemplate(event.offers);
+  const offersTemplate = createOffersTemplate(event.offers);
 
   return `<li class="trip-events__item">
     <div class="event">
@@ -58,3 +59,29 @@ export const createEventItemTemplate = (event) => {
     </div>
   </li>`;
 };
+
+
+export default class EventItemView {
+  #element = null;
+  #event = null;
+
+  constructor(event) {
+    this.#event = event;
+  }
+
+  get element() {
+    if(!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createEventItemTemplate(this.#event);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
