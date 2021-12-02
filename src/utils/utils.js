@@ -1,10 +1,7 @@
 
 import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
-import { possibleDurationTimeMinutes, possibleEventPrice, descriptionText } from './mock/events';
-import { offersTypes } from './mock/events';
-
-dayjs.extend(duration);
+import { possibleDurationTimeMinutes, possibleEventPrice, descriptionText, offersTypes } from '../mock/events';
+import { countDuration } from './countDuration';
 
 export const getRandomIntenger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -14,7 +11,6 @@ export const getRandomIntenger = (a = 0, b = 1) => {
 };
 
 export const generateRandomDate = (eventType) => {
-  //использую минуты чтобы легче было установить рандомное время
   const randomMinutesIntervalFromToday = getRandomIntenger(15, 43200);
   const randomDurationTime = getRandomIntenger(15, possibleDurationTimeMinutes[eventType]);
 
@@ -57,24 +53,11 @@ export const getRandomPhotos = () => {
 
 export const getIsFavourite = () => Boolean(getRandomIntenger(0, 1));
 
-export const countDuration = (start, finish) => {
-  const durationInMinutes = dayjs(start).diff(dayjs(finish), 'minute');
-
-  if(durationInMinutes < 60) {
-    return `${dayjs.duration(durationInMinutes, 'minute').format('mm')}M`;
-  }
-
-  if(durationInMinutes >= 60 && durationInMinutes < (24*60)) {
-    return `${dayjs.duration(durationInMinutes, 'minute').format('HH')}H ${dayjs.duration(durationInMinutes, 'minute').format('mm')}M`;
-  }
-
-  return `${dayjs.duration(durationInMinutes, 'minute').format('DD')}D ${dayjs.duration(durationInMinutes, 'minute').format('HH')}H ${dayjs.duration(durationInMinutes, 'minute').format('mm')}M`;
-};
-
 export const generateEvent = () => {
   const eventType = generateEventType();
   const dates = generateRandomDate(eventType);
   countDuration(dates.eventStartDate, dates.eventFinishDate);
+
   return {
     destination: generateEventCity(),
     type: eventType,
@@ -88,8 +71,4 @@ export const generateEvent = () => {
   };
 };
 
-export const countTotalSum = (array) => array.reduce((accumulator, item) => {
-  const offersPrice = item.offers.reduce((acc, el) => acc + el.price, 0);
 
-  return accumulator + item.price + offersPrice;
-}, 0);
