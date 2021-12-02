@@ -1,51 +1,7 @@
 
 import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
-import { possibleDurationTimeMinutes, possibleEventPrice, descriptionText } from './mock/events';
-import { offersTypes } from './mock/events';
-
-dayjs.extend(duration);
-
-export const RenderPosition = {
-  BEFOREBEGIN: 'beforebegin',
-  AFTERBEGIN: 'afterbegin',
-  BEFORREEND: 'beforeend',
-  AFTEREND: 'afterend'
-};
-
-export const BLANK_EVENT = {
-  destination: '',
-  type: '',
-  startDate: 0,
-  finishDate: 0,
-  price: 0,
-  offers: [],
-  photos: [],
-  description: '',
-};
-
-export const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.BEFOREBEGIN:
-      container.before(element);
-      break;
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFORREEND:
-      container.append(element);
-      break;
-    case RenderPosition.AFTEREND:
-      container.after(element);
-      break;
-  }
-};
-
-export const createElement = (template) => {
-  const newElement = document.createElement('div');
-  newElement.innerHTML = template;
-  return newElement.firstChild;
-};
+import { possibleDurationTimeMinutes, possibleEventPrice, descriptionText, offersTypes } from '../mock/events';
+import { countDuration } from './countDuration';
 
 export const getRandomIntenger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -97,20 +53,6 @@ export const getRandomPhotos = () => {
 
 export const getIsFavourite = () => Boolean(getRandomIntenger(0, 1));
 
-export const countDuration = (start, finish) => {
-  const durationInMinutes = dayjs(start).diff(dayjs(finish), 'minute');
-
-  if(durationInMinutes < 60) {
-    return `${dayjs.duration(durationInMinutes, 'minute').format('mm')}M`;
-  }
-
-  if(durationInMinutes >= 60 && durationInMinutes < (24*60)) {
-    return `${dayjs.duration(durationInMinutes, 'minute').format('HH')}H ${dayjs.duration(durationInMinutes, 'minute').format('mm')}M`;
-  }
-
-  return `${dayjs.duration(durationInMinutes, 'minute').format('DD')}D ${dayjs.duration(durationInMinutes, 'minute').format('HH')}H ${dayjs.duration(durationInMinutes, 'minute').format('mm')}M`;
-};
-
 export const generateEvent = () => {
   const eventType = generateEventType();
   const dates = generateRandomDate(eventType);
@@ -129,8 +71,4 @@ export const generateEvent = () => {
   };
 };
 
-export const countTotalSum = (array) => array.reduce((accumulator, item) => {
-  const offersPrice = item.offers.reduce((acc, el) => acc + el.price, 0);
 
-  return accumulator + item.price + offersPrice;
-}, 0);

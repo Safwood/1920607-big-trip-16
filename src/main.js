@@ -5,7 +5,8 @@ import TripSortingView from './view/trip-sorting-view';
 import EventListView from './view/trip-event-list';
 import EventItemView from './view/trip-event-item';
 import TripNewEventView from './view/trip-new-point-without-destination';
-import {  generateEvent, countTotalSum, RenderPosition, render } from './utils';
+import {  generateEvent, countTotalSum, render } from './utils';
+import { RenderPosition } from './utils';
 
 const EVENT_COUNT = 25;
 

@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import { createElement, BLANK_EVENT } from '../utils';
+import { createElement } from '../utils';
+import { BLANK_EVENT } from '../utils';
 
 const createOffersTemplate = (offers, type) => `<div class="event__available-offers">
   ${offers.map((offer) => `<div class="event__offer-selector">
