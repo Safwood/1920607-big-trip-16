@@ -41,6 +41,7 @@ const renderEvent = (container, event) => {
     e.preventDefault();
     replaceFormToCard();
   });
+  newEventElement.querySelector('.event__reset-btn').addEventListener('click', replaceFormToCard);
 
   render(container, eventElement, RenderPosition.BEFORREEND);
 };
