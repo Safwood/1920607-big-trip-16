@@ -42,7 +42,7 @@ const renderEvent = (container, event) => {
       replaceFormToCard();
       document.removeEventListener('keydown', handleEscKeyDown);
     }
-  }
+  };
 
   eventElement.querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceCardToForm();
@@ -61,7 +61,7 @@ const renderEvent = (container, event) => {
 const tripEventsList = document.querySelector('.trip-events__list');
 
 if(!events.length) {
-  render(tripEvents, new NoEventView().element, RenderPosition.BEFORREEND)
+  render(tripEvents, new NoEventView().element, RenderPosition.BEFORREEND);
 } else {
   for(const event of events) {
     renderEvent(tripEventsList, event);
