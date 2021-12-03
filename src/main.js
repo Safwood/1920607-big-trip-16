@@ -5,10 +5,11 @@ import TripSortingView from './view/trip-sorting-view';
 import EventListView from './view/trip-event-list';
 import EventItemView from './view/trip-event-item';
 import TripNewEventView from './view/trip-new-point-without-destination';
+import NoEventView from './view/no-event-view';
 import {  generateEvent, countTotalSum, render } from './utils';
 import { RenderPosition } from './utils';
 
-const EVENT_COUNT = 25;
+const EVENT_COUNT = 0;
 
 const events = Array.from({length: EVENT_COUNT}, generateEvent);
 
@@ -35,7 +36,18 @@ const renderEvent = (container, event) => {
     container.replaceChild(eventElement, newEventElement);
   };
 
-  eventElement.querySelector('.event__rollup-btn').addEventListener('click', replaceCardToForm);
+  const handleEscKeyDown = (e) => {
+    if(e.key === 'Esc' || e.key === 'Escape') {
+      e.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', handleEscKeyDown);
+    }
+  };
+
+  eventElement.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceCardToForm();
+    document.addEventListener('keydown', handleEscKeyDown);
+  });
 
   newEventElement.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -48,6 +60,10 @@ const renderEvent = (container, event) => {
 
 const tripEventsList = document.querySelector('.trip-events__list');
 
-for(const event of events) {
-  renderEvent(tripEventsList, event);
+if(!events.length) {
+  render(tripEvents, new NoEventView().element, RenderPosition.BEFORREEND);
+} else {
+  for(const event of events) {
+    renderEvent(tripEventsList, event);
+  }
 }
