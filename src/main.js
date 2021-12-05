@@ -19,11 +19,11 @@ const tripMain = document.querySelector('.trip-main');
 const tripEvents = document.querySelector('.trip-events');
 const totalPrice = countTotalSum(events);
 
-render(menuContainer, new SiteMenuView().element, RenderPosition.BEFORREEND);
-render(tripFilterContainer, new TripFilterView().element, RenderPosition.BEFORREEND);
-render(tripMain, new TripInfoView(totalPrice).element, RenderPosition.AFTERBEGIN);
-render(tripEvents, new TripSortingView().element, RenderPosition.BEFORREEND);
-render(tripEvents, new EventListView().element, RenderPosition.BEFORREEND);
+render(menuContainer, new SiteMenuView(), RenderPosition.BEFORREEND);
+render(tripFilterContainer, new TripFilterView(), RenderPosition.BEFORREEND);
+render(tripMain, new TripInfoView(totalPrice), RenderPosition.AFTERBEGIN);
+render(tripEvents, new TripSortingView(), RenderPosition.BEFORREEND);
+render(tripEvents, new EventListView(), RenderPosition.BEFORREEND);
 
 const renderEvent = (container, event) => {
   const eventElementView = new EventItemView(event);
@@ -55,13 +55,13 @@ const renderEvent = (container, event) => {
 
   newEventElementView.setCancelButtonHandler(replaceFormToCard);
 
-  render(container, eventElementView.element, RenderPosition.BEFORREEND);
+  render(container, eventElementView, RenderPosition.BEFORREEND);
 };
 
 const tripEventsList = document.querySelector('.trip-events__list');
 
 if(!events.length) {
-  render(tripEvents, new NoEventView().element, RenderPosition.BEFORREEND);
+  render(tripEvents, new NoEventView(), RenderPosition.BEFORREEND);
 } else {
   for(const event of events) {
     renderEvent(tripEventsList, event);
