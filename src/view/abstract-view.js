@@ -3,6 +3,7 @@ import { createElement } from '../utils';
 
 export default class AbstractView {
   #element = null;
+  _callback = {};
 
   constructor() {
     if(new.target === AbstractView) {
