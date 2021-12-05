@@ -154,6 +154,7 @@ export default class TripNewEventView extends AbstractView {
     this._callback.saveEvent = callback;
     this.element.querySelector('form').addEventListener('submit', this.#handleSaveButtonClick);
   }
+
   setCancelButtonHandler = (callback) => {
     this._callback.cancelEditEvent = callback;
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#handleCancelButtonClick);
@@ -163,6 +164,7 @@ export default class TripNewEventView extends AbstractView {
     e.preventDefault();
     this._callback.saveEvent();
   }
+
   #handleCancelButtonClick = (e) => {
     e.preventDefault();
     this._callback.cancelEditEvent();

@@ -33,5 +33,5 @@ export default class TripSortingView extends AbstractView {
   get template() {
     return createTripSortingTemplate();
   }
-  
+
 }

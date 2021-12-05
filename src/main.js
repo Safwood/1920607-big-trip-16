@@ -47,7 +47,7 @@ const renderEvent = (container, event) => {
   eventElementView.setEditClickHandler(() => {
     replaceCardToForm();
     document.addEventListener('keydown', handleEscKeyDown);
-  })
+  });
 
   newEventElementView.setSaveButtonHandler(() => {
     replaceFormToCard();
