@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { createElement } from '../utils';
+import AbstractView from './abstract-view';
 import { BLANK_EVENT } from '../utils';
 
 const createOffersTemplate = (offers, type) => `<div class="event__available-offers">
@@ -138,27 +138,36 @@ const createTripNewEventTemplate = (event) => {
 };
 
 
-export default class  TripNewEventView {
-  #element = null;
+export default class TripNewEventView extends AbstractView {
   #event = null;
 
   constructor(event = BLANK_EVENT) {
+    super();
     this.#event = event;
-  }
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createTripNewEventTemplate(this.#event);
   }
 
-  removeElement() {
-    this.#element = null;
+  setSaveButtonHandler = (callback) => {
+    this._callback.saveEvent = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#handleSaveButtonClick);
   }
+
+  setCancelButtonHandler = (callback) => {
+    this._callback.cancelEditEvent = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#handleCancelButtonClick);
+  }
+
+  #handleSaveButtonClick = (e) => {
+    e.preventDefault();
+    this._callback.saveEvent();
+  }
+
+  #handleCancelButtonClick = (e) => {
+    e.preventDefault();
+    this._callback.cancelEditEvent();
+  }
+
 }

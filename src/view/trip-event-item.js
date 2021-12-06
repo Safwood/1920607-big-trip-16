@@ -1,6 +1,6 @@
 import { countDuration } from '../utils';
 import dayjs from 'dayjs';
-import { createElement } from '../utils';
+import AbstractView from './abstract-view';
 
 const createOffersTemplate = (offers) => (
   `<ul class="event__selected-offers">
@@ -61,27 +61,25 @@ const createEventItemTemplate = (event) => {
 };
 
 
-export default class EventItemView {
-  #element = null;
+export default class EventItemView extends AbstractView {
   #event = null;
 
   constructor(event) {
+    super();
     this.#event = event;
-  }
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createEventItemTemplate(this.#event);
   }
 
-  removeElement() {
-    this.#element = null;
+  setEditClickHandler = (callback) => {
+    this._callback.editEventItem = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editElement);
+  }
+
+  #editElement = (e) => {
+    e.preventDefault();
+    this._callback.editEventItem();
   }
 }

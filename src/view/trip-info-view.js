@@ -1,4 +1,4 @@
-import { createElement } from '../utils';
+import AbstractView from './abstract-view';
 
 const createTripInfoTemplate = (totalPrice) => (
   `<section class="trip-main__trip-info  trip-info">
@@ -14,27 +14,16 @@ const createTripInfoTemplate = (totalPrice) => (
   </section>`
 );
 
-export default class TripInfoView {
-  #element = null;
+export default class TripInfoView extends AbstractView {
   #totalPrice = null;
 
   constructor(totalPrice) {
+    super();
     this.#totalPrice = totalPrice;
-  }
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createTripInfoTemplate(this.#totalPrice);
   }
 
-  removeElement() {
-    this.#element = null;
-  }
 }
