@@ -1,5 +1,6 @@
 
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 import { possibleDurationTimeMinutes, possibleEventPrice, descriptionText, offersTypes } from '../mock/events';
 import { countDuration } from './countDuration';
 
@@ -59,6 +60,7 @@ export const generateEvent = () => {
   countDuration(dates.eventStartDate, dates.eventFinishDate);
 
   return {
+    id: nanoid(3),
     destination: generateEventCity(),
     type: eventType,
     startDate: dates.eventStartDate,

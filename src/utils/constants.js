@@ -6,6 +6,7 @@ export const RenderPosition = {
 };
 
 export const BLANK_EVENT = {
+  id: null,
   destination: '',
   type: '',
   startDate: 0,

@@ -1,5 +1,5 @@
 import {  generateEvent } from 'utils';
-import TripPresenter from 'presenter/trip-presenter'
+import TripPresenter from 'presenter/trip-presenter';
 
 const EVENT_COUNT = 25;
 
