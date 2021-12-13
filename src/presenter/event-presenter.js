@@ -1,6 +1,7 @@
 import EventItemView from 'view/trip-event-item';
 import TripNewEventView from 'view/trip-new-point-without-destination';
 import { render, RenderPosition } from 'utils';
+import { remove } from '../utils';
 
 export default class EventPresenter {
   #container = null;
@@ -75,7 +76,7 @@ export default class EventPresenter {
   }
 
   destroy = () => {
-    this.eventElementView = null;
-    this.newEventElementView = null;
+    remove(this.#eventElementView);
+    remove(this.#newEventElementView);
   }
 }

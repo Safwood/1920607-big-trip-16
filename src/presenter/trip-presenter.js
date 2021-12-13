@@ -53,11 +53,11 @@ export default class TripPresenter {
   }
 
   #renderSiteMenuView = () => {
-    render(this.#menuContainer, this.#siteMenuView, RenderPosition.BEFORREEND);
+    render(this.#menuContainer, this.#siteMenuView, RenderPosition.AFTERBEGIN);
   }
 
   #renderTripFilterView = () => {
-    render(this.#tripFilterContainer, this.#tripFilterView, RenderPosition.BEFORREEND);
+    render(this.#tripFilterContainer, this.#tripFilterView, RenderPosition.AFTERBEGIN);
   }
 
   #renderTripInfoView = () => {
@@ -65,7 +65,7 @@ export default class TripPresenter {
   }
 
   #renderTripSortingView = () => {
-    render(this.#tripEvents, this.#tripSortingView, RenderPosition.BEFORREEND);
+    render(this.#tripEvents, this.#tripSortingView, RenderPosition.AFTERBEGIN);
   }
 
   #renderNoEventView = () => {
@@ -81,10 +81,10 @@ export default class TripPresenter {
   }
 
   #renderPageContent = () => {
-    this.#renderSiteMenuView();
-    this.#renderTripFilterView();
-    this.#renderTripInfoView();
     this.#renderTripSortingView();
+    this.#renderTripFilterView();
+    this.#renderSiteMenuView();
+    this.#renderTripInfoView();
 
     if(!this.#events.length) {
       this.#renderNoEventView();

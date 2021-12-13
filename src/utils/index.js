@@ -5,3 +5,5 @@ export * from './countTotalSum';
 export * from './render';
 export * from './createElement';
 export * from './updateElement';
+export * from './replace';
+export * from './remove';
