@@ -42,6 +42,10 @@ export default class TripPresenter {
     this.#renderPageContent();
   }
 
+  #handleModeChange = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  }
+
   #handleEventChange = (updatedEvent) => {
     this.#events = updateItem(this.#events, updatedEvent);
     this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
@@ -74,7 +78,7 @@ export default class TripPresenter {
 
   #renderEvents = () => {
     for(const event of this.#events) {
-      const eventPresenter = new EventPresenter(this.#tripEventsList, this.#handleEventChange);
+      const eventPresenter = new EventPresenter(this.#tripEventsList, this.#handleEventChange, this.#handleModeChange);
       eventPresenter.init(event);
       this.#eventPresenters.set(event.id, eventPresenter);
     }

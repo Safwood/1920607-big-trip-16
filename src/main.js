@@ -1,7 +1,7 @@
 import {  generateEvent } from 'utils';
 import TripPresenter from 'presenter/trip-presenter';
 
-const EVENT_COUNT = 25;
+const EVENT_COUNT = 2;
 
 const events = Array.from({length: EVENT_COUNT}, generateEvent);
 

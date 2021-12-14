@@ -162,7 +162,7 @@ export default class TripNewEventView extends AbstractView {
 
   #handleSaveButtonClick = (e) => {
     e.preventDefault();
-    this._callback.saveEvent();
+    this._callback.saveEvent(this.#event);
   }
 
   #handleCancelButtonClick = (e) => {

@@ -16,3 +16,8 @@ export const BLANK_EVENT = {
   photos: [],
   description: '',
 };
+
+export const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};

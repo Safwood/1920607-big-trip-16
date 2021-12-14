@@ -1,7 +1,6 @@
 import EventItemView from 'view/trip-event-item';
 import TripNewEventView from 'view/trip-new-point-without-destination';
-import { render, RenderPosition } from 'utils';
-import { remove } from '../utils';
+import { render, RenderPosition, replace, Mode, remove } from 'utils';
 
 export default class EventPresenter {
   #container = null;
@@ -9,10 +8,13 @@ export default class EventPresenter {
   #eventElementView = null;
   #newEventElementView = null;
   #handleChange = null;
+  #changeMode = null;
+  #mode = Mode.DEFAULT;
 
-  constructor(container, handleChange) {
+  constructor(container, handleChange, changeMode) {
     this.#container = container;
     this.#handleChange = handleChange;
+    this.#changeMode = changeMode;
   }
 
   init = (event) => {
@@ -30,16 +32,28 @@ export default class EventPresenter {
     }
 
     if(this.#container.contains(prevEventView.element)) {
-      this.#container.replaceChild(this.#eventElementView.element, prevEventView.element);
+      replace(this.#eventElementView.element, prevEventView.element);
+    }
+    if(this.#container.contains(prevEventEditView.element)) {
+      replace(this.#newEventElementView.element, prevEventEditView.element);
+    }
+  }
+
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToCard();
     }
   }
 
   #replaceCardToForm = () => {
-    this.#container.replaceChild(this.#newEventElementView.element, this.#eventElementView.element);
+    replace(this.#newEventElementView.element, this.#eventElementView.element);
+    this.#changeMode();
+    this.#mode = Mode.EDITING;
   };
 
   #replaceFormToCard = () => {
-    this.#container.replaceChild(this.#eventElementView.element, this.#newEventElementView.element);
+    replace(this.#eventElementView.element, this.#newEventElementView.element);
+    this.#mode = Mode.DEFAULT;
   };
 
   #handleFavoriteClick = () => {
@@ -64,7 +78,8 @@ export default class EventPresenter {
       this.#handleFavoriteClick()
     );
 
-    this.#newEventElementView.setSaveButtonHandler(() => {
+    this.#newEventElementView.setSaveButtonHandler((event) => {
+      this.#handleChange(event);
       this.#replaceFormToCard();
     });
 

@@ -1,3 +1,5 @@
+import AbstractView from 'view/abstract-view';
+
 export const remove = (component) => {
   if (component === null) {
     return;
