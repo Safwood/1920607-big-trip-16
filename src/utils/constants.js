@@ -6,6 +6,7 @@ export const RenderPosition = {
 };
 
 export const BLANK_EVENT = {
+  id: null,
   destination: '',
   type: '',
   startDate: 0,
@@ -14,4 +15,9 @@ export const BLANK_EVENT = {
   offers: [],
   photos: [],
   description: '',
+};
+
+export const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
 };
