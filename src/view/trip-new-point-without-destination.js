@@ -1,6 +1,5 @@
-import dayjs from 'dayjs';
 import AbstractView from './abstract-view';
-import { BLANK_EVENT } from '../utils';
+import { BLANK_EVENT, getTime, convertDateWithDay } from 'utils';
 
 const createOffersTemplate = (offers, type) => `<div class="event__available-offers">
   ${offers.map((offer) => `<div class="event__offer-selector">
@@ -19,10 +18,10 @@ const createPhotoListTemplate = (photos) => `<div class="event__photos-tape">
 
 const createTripNewEventTemplate = (event) => {
 
-  const startDay = dayjs(event.startDate).format('DD/MM/YY');
-  const finishDay = dayjs(event.finishDate).format('DD/MM/YY');
-  const finishTime = dayjs(event.finishDate).format('HH:mm');
-  const startTime = dayjs(event.startDate).format('HH:mm');
+  const startDay = convertDateWithDay(event.startDate);
+  const finishDay = convertDateWithDay(event.finishDate);
+  const finishTime = getTime(event.finishDate);
+  const startTime = getTime(event.startDate);
   const photosTemplate = createPhotoListTemplate(event.photos);
   const offersTemplate = createOffersTemplate(event.offers, event.type);
 
