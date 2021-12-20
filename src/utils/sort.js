@@ -1,11 +1,13 @@
-import dayjs from 'dayjs';
+import { convertDateWithYear, getTime } from 'utils';
 
 export const sort = (array, sortType) => {
   switch(sortType) {
     case 'day':
       array.sort((a, b) => {
-        if(dayjs(a.startDate).format('YYYY/MM/DD') < dayjs(b.startDate).format('YYYY/MM/DD')) {return -1;}
-        if(dayjs(a.startDate).format('YYYY/MM/DD') > dayjs(b.startDate).format('YYYY/MM/DD')) {return 1;}
+        const dateA = convertDateWithYear(a.startDate);
+        const dateB = convertDateWithYear(b.startDate);
+        if(dateA < dateB) {return -1;}
+        if(dateA > dateB) {return 1;}
       });
       break;
     case 'event':
@@ -16,8 +18,10 @@ export const sort = (array, sortType) => {
       break;
     case 'time':
       array.sort((a, b) => {
-        if(dayjs(a.startDate).format('HH/mm') < dayjs(b.startDate).format('HH/mm')) {return -1;}
-        if(dayjs(a.startDate).format('HH/mm') > dayjs(b.startDate).format('HH/mm')) {return 1;}
+        const timeA = getTime(a.startDate);
+        const timeB = getTime(b.startDate);
+        if(timeA < timeB) {return -1;}
+        if(timeA > timeB) {return 1;}
       });
       break;
     case 'price':
