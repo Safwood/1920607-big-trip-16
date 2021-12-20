@@ -1,5 +1,4 @@
-import { countDuration } from '../utils';
-import dayjs from 'dayjs';
+import { countDuration, getTime, convertDateWithMonth, convertDateWithYear, convertDateWithTime } from 'utils';
 import AbstractView from './abstract-view';
 
 const createOffersTemplate = (offers) => (
@@ -15,12 +14,12 @@ const createOffersTemplate = (offers) => (
 );
 
 const createEventItemTemplate = (event) => {
-  const startDay = dayjs(event.startDate).format('MMM DD');
-  const startDayWithYear = dayjs(event.startDate).format('YYYY-MM-DD');
-  const finishTimeWithDate = dayjs(event.finishDate).format('YYYY-MM-DDTHH:mm');
-  const startTimeFromDate = dayjs(event.startDate).format('YYYY-MM-DDTHH:mm');
-  const finishTime = dayjs(event.finishDate).format('HH:mm');
-  const startTime = dayjs(event.startDate).format('HH:mm');
+  const startDay = convertDateWithMonth(event.startDate);
+  const startDayWithYear = convertDateWithYear(event.startDate);
+  const finishTimeWithDate = convertDateWithTime(event.finishDate);
+  const startTimeFromDate = convertDateWithTime(event.startDate);
+  const finishTime = getTime(event.finishDate);
+  const startTime = getTime(event.startDate);
   const duration = countDuration(event.finishDate, event.startDate);
 
   const isFavouriteClassName = `event__favorite-btn ${event.isFavorite ? 'event__favorite-btn--active' : ''}`;

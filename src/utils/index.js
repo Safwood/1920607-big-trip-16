@@ -7,3 +7,5 @@ export * from './createElement';
 export * from './updateElement';
 export * from './replace';
 export * from './remove';
+export * from './sort';
+export * from './convertDate';

@@ -1,12 +1,11 @@
 import SiteMenuView from 'view/site-menu-view';
 import TripFilterView from 'view/trip-filter-view';
 import TripInfoView from 'view/trip-info-view';
-import TripSortingView from 'view/trip-sorting-view';
 import EventListView from 'view/trip-event-list';
 import NoEventView from 'view/no-event-view';
-import { countTotalSum, render, RenderPosition, updateItem } from 'utils';
+import { countTotalSum, render, RenderPosition, updateItem, sort, SortingType } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
-
+import SortingPresenter from 'presenter/sorting-presenter';
 
 export default class TripPresenter {
   #events = null;
@@ -17,11 +16,12 @@ export default class TripPresenter {
   #tripEvents = null;
   #tripInfoView = null;
   #tripEventsList = null;
+  #sortingPresenter = null;
+  #sortType = SortingType.DAY;
   #eventPresenters = new Map();
 
   #siteMenuView = new SiteMenuView();
   #tripFilterView = new TripFilterView()
-  #tripSortingView = new TripSortingView();
   #eventListView = new EventListView();
   #noEventView = new NoEventView();
 
@@ -69,7 +69,17 @@ export default class TripPresenter {
   }
 
   #renderTripSortingView = () => {
-    render(this.#tripEvents, this.#tripSortingView, RenderPosition.AFTERBEGIN);
+    this.#sortingPresenter = new SortingPresenter(this.#handleSortTypeChange, this.#sortType);
+    this.#sortingPresenter.init(this.#tripEvents);
+  }
+
+  #handleSortTypeChange = (sortingType) => {
+    this.#sortType = sortingType;
+    this.#clearEventList();
+    this.#clearSorting();
+    this.#events = sort(this.#events, sortingType);
+    this.#renderTripSortingView();
+    this.#renderEvents();
   }
 
   #renderNoEventView = () => {
@@ -77,6 +87,10 @@ export default class TripPresenter {
   }
 
   #renderEvents = () => {
+    if(!this.#events.length) {
+      this.#renderNoEventView();
+    }
+
     for(const event of this.#events) {
       const eventPresenter = new EventPresenter(this.#tripEventsList, this.#handleEventChange, this.#handleModeChange);
       eventPresenter.init(event);
@@ -89,16 +103,15 @@ export default class TripPresenter {
     this.#renderTripFilterView();
     this.#renderSiteMenuView();
     this.#renderTripInfoView();
-
-    if(!this.#events.length) {
-      this.#renderNoEventView();
-    }
-
     this.#renderEvents();
   }
 
   #clearEventList = () => {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
+  }
+
+  #clearSorting = () => {
+    this.#sortingPresenter.destroy();
   }
 }

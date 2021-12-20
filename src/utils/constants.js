@@ -21,3 +21,10 @@ export const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
 };
+export const SortingType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
+};
