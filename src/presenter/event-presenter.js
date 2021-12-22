@@ -1,5 +1,5 @@
-import EventItemView from 'view/trip-event-item';
-import TripNewEventView from 'view/trip-new-point-without-destination';
+import EventItemView from 'view/event-item-view';
+import EditEventView from 'view/edit-event-view';
 import { render, RenderPosition, replace, Mode, remove } from 'utils';
 
 export default class EventPresenter {
@@ -23,7 +23,7 @@ export default class EventPresenter {
     const prevEventEditView = this.#newEventElementView;
 
     this.#eventElementView = new EventItemView(event);
-    this.#newEventElementView = new TripNewEventView(event);
+    this.#newEventElementView = new EditEventView(event);
 
     this.#setHandlers();
     if(prevEventView === null || prevEventEditView === null) {

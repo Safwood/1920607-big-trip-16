@@ -1,4 +1,4 @@
-import AbstractView from './abstract-view';
+import SmartView from './smart-view';
 import { BLANK_EVENT, getTime, convertDateWithDay } from 'utils';
 
 const createOffersTemplate = (offers, type) => `<div class="event__available-offers">
@@ -16,7 +16,7 @@ const createPhotoListTemplate = (photos) => `<div class="event__photos-tape">
   ${photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('')}
 </div>`;
 
-const createTripNewEventTemplate = (event) => {
+const createNewEventTemplate = (event) => {
 
   const startDay = convertDateWithDay(event.startDate);
   const finishDay = convertDateWithDay(event.finishDate);
@@ -137,7 +137,7 @@ const createTripNewEventTemplate = (event) => {
 };
 
 
-export default class TripNewEventView extends AbstractView {
+export default class EditEventView extends SmartView {
   #event = null;
 
   constructor(event = BLANK_EVENT) {
@@ -146,7 +146,7 @@ export default class TripNewEventView extends AbstractView {
   }
 
   get template() {
-    return createTripNewEventTemplate(this.#event);
+    return createNewEventTemplate(this.#event);
   }
 
   setSaveButtonHandler = (callback) => {

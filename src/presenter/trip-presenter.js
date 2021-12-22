@@ -1,7 +1,7 @@
 import SiteMenuView from 'view/site-menu-view';
 import TripFilterView from 'view/trip-filter-view';
 import TripInfoView from 'view/trip-info-view';
-import EventListView from 'view/trip-event-list';
+import EventListView from 'view/event-list-view';
 import NoEventView from 'view/no-event-view';
 import { countTotalSum, render, RenderPosition, updateItem, sort, SortingType } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
