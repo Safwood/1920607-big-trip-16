@@ -16,7 +16,7 @@ const createPhotoListTemplate = (photos) => `<div class="event__photos-tape">
   ${photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('')}
 </div>`;
 
-const createNewEventTemplate = (event) => {
+const createNewEventTemplate = (event, isEditing) => {
 
   const startDay = convertDateWithDay(event.startDate);
   const finishDay = convertDateWithDay(event.finishDate);
@@ -26,7 +26,7 @@ const createNewEventTemplate = (event) => {
   const offersTemplate = createOffersTemplate(event.offers, event.type);
 
   return `<li class="trip-events__item">
-    <form class="event event--edit" action="#" method="post">
+            <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -116,7 +116,11 @@ const createNewEventTemplate = (event) => {
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">Cancel</button>
+                  <button class="event__reset-btn" type="reset">${isEditing ? 'Delete' : 'Cancel'}</button>
+                  ${isEditing ? `<button class="event__rollup-btn" type="button">
+                    <span class="visually-hidden">Open event</span>
+                  </button>`
+                  : ``}
                 </header>
                 <section class="event__details">
                   <section class="event__section  event__section--offers">
@@ -133,12 +137,13 @@ const createNewEventTemplate = (event) => {
                   </section>
                 </section>
               </form>
-            </li>`;
+            </li>`
 };
 
 
 export default class EditEventView extends SmartView {
   #event = null;
+  #isEditing = true;
 
   constructor(event = BLANK_EVENT) {
     super();
@@ -146,7 +151,7 @@ export default class EditEventView extends SmartView {
   }
 
   get template() {
-    return createNewEventTemplate(this.#event);
+    return createNewEventTemplate(this.#event, this.#isEditing);
   }
 
   setSaveButtonHandler = (callback) => {
@@ -156,7 +161,11 @@ export default class EditEventView extends SmartView {
 
   setCancelButtonHandler = (callback) => {
     this._callback.cancelEditEvent = callback;
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#handleCancelButtonClick);
+    if(this.#isEditing) {
+      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handleCancelButtonClick);
+    } else {
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#handleCancelButtonClick);
+    }
   }
 
   #handleSaveButtonClick = (e) => {
