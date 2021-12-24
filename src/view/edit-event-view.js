@@ -1,15 +1,16 @@
 import SmartView from './smart-view';
 import { BLANK_EVENT, getTime, convertDateWithDay, eventTypes } from 'utils';
 
-const createOffersTemplate = (offers, type) => `<div class="event__available-offers">
+const createOffersTemplate = (offers, type) => 
+`<div class="event__available-offers">
   ${offers.map((offer) => `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${offer.id}" type="checkbox" name="event-offer-${type}" checked>
-    <label class="event__offer-label" for="event-offer-${type}-${offer.id}">
+    <input class="event__offer-checkbox  visually-hidden" data-offer-id="${offer.id}" id="event-offer-${type}-${offer.id}" type="checkbox" name="event-offer-${type}" ${offer.checked ? 'checked' : ''}>
+    <label class="event__offer-label"  for="event-offer-${type}-${offer.id}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
     </label>
-  </div>`)}  
+  </div>`)}
 </div>`;
 
 const createAllEventTypesTemplate = () =>
@@ -142,6 +143,11 @@ export default class EditEventView extends SmartView {
       .addEventListener('input', this.#eventDateStartChangeHandler);
     this.element.querySelector('#event-end-time-1')
       .addEventListener('input', this.#eventDateEndChangeHandler);
+    if(this._data.offers.length) {
+      this.element.querySelectorAll('.event__offer-checkbox')
+      .forEach(element => element
+        .addEventListener('click', this.#eventOffersToggleHandler))
+    }
   }
 
   #eventTypeChangeHandler = (e) => {
@@ -151,6 +157,21 @@ export default class EditEventView extends SmartView {
     }
     
     this.updateData({type: e.target.innerText}, false)
+  }
+
+  #eventOffersToggleHandler = (e) => {
+    e.preventDefault();
+    if(!e.currentTarget.dataset.offerId) {
+      return;
+    }
+    
+    const newOffers = [...this._data.offers].map(offer => {
+      if(offer.id === Number(e.currentTarget.dataset.offerId)) {
+        offer.checked = !offer.checked;
+      }
+      return offer
+    })
+    this.updateData({offers: newOffers}, false)
   }
 
   #eventPriceChangeHandler = (e) => {
@@ -191,31 +212,6 @@ export default class EditEventView extends SmartView {
     
     this.updateData({finishDate: e.target.value}, true)
   }
-
-  // static parseEventToData = (event) => ({...event,
-  //   type: event.eventType !== null,
-  //   destination: '',
-  // });
-
-  // static parseDataToEvent = (data) => {
-  //   const event = {...data};
-
-    // if (!event.isDueDate) {
-    //   event.dueDate = null;
-    // }
-
-    // if (!event.isRepeating) {
-    //   event.repeating = {
-    //     mo: false,
-        
-    //   };
-    // }
-
-    // delete event.isDueDate;
-    // delete event.isRepeating;
-
-  //   return event;
-  // }
 
   #handleSaveButtonClick = (e) => {
     e.preventDefault();

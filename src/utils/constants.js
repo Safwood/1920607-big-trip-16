@@ -28,3 +28,5 @@ export const SortingType = {
   PRICE: 'price',
   OFFERS: 'offers',
 };
+
+export const eventTypes = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];

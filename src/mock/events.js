@@ -59,17 +59,20 @@ export const offersTypes = [
       {
         'id': 1,
         'title': 'Upgrade to a business class',
-        'price': 120
+        'price': 120,
+        'checked': false
       },
       {
         'id': 2,
         'title': 'Choose the radio station',
-        'price': 60
+        'price': 60,
+        'checked': false
       },
       {
         'id': 3,
         'title': 'Order Uber',
-        'price': 20
+        'price': 20,
+        'checked': false
       },
     ]
   },
@@ -83,12 +86,14 @@ export const offersTypes = [
       {
         'id': 1,
         'title': 'Upgrade to a business class',
-        'price': 120
+        'price': 120,
+        'checked': false
       },
       {
         'id': 2,
         'title': 'Order breakfast',
-        'price': 60
+        'price': 60,
+        'checked': false
       }
     ]
   },
@@ -98,12 +103,14 @@ export const offersTypes = [
       {
         'id': 1,
         'title': 'Upgrade to a business class',
-        'price': 120
+        'price': 120,
+        'checked': false
       },
       {
         'id': 2,
         'title': 'Order breakfast',
-        'price': 60
+        'price': 60,
+        'checked': false
       }
     ]
   },
@@ -113,12 +120,14 @@ export const offersTypes = [
       {
         'id': 1,
         'title': 'Rent a car',
-        'price': 200
+        'price': 200,
+        'checked': false
       },
       {
         'id': 2,
         'title': 'Rent a car with a driver',
-        'price': 500
+        'price': 500,
+        'checked': false
       }
     ]
   },
@@ -128,12 +137,14 @@ export const offersTypes = [
       {
         'id': 1,
         'title': 'Add luggage',
-        'price': 50
+        'price': 50,
+        'checked': false
       },
       {
         'id': 2,
         'title': 'Switch to comfort',
-        'price': 80
+        'price': 80,
+        'checked': false
       }
     ]
   },
@@ -151,12 +162,14 @@ export const offersTypes = [
       {
         'id': 1,
         'title': 'Book a table',
-        'price': 5
+        'price': 5,
+        'checked': false
       },
       {
         'id': 2,
         'title': 'Order romantic dinner',
-        'price': 500
+        'price': 500,
+        'checked': false
       }
     ]
   },
