@@ -17,7 +17,6 @@ const createPhotoListTemplate = (photos) => `<div class="event__photos-tape">
 </div>`;
 
 const createNewEventTemplate = (event, isEditing) => {
-
   const startDay = convertDateWithDay(event.startDate);
   const finishDay = convertDateWithDay(event.finishDate);
   const finishTime = getTime(event.finishDate);
@@ -91,11 +90,11 @@ const createNewEventTemplate = (event, isEditing) => {
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${event.type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${event.destination}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${event.destination}" list="#">
                     <datalist id="destination-list-1">
-                      <option value="Amsterdam"></option>
-                      <option value="Geneva"></option>
-                      <option value="Chamonix"></option>
+                      <option value="Amsterdam">Amsterdam</option>
+                      <option value="Geneva">Geneva</option>
+                      <option value="Chamonix">Chamonix</option>
                     </datalist>
                   </div>
 
@@ -123,18 +122,20 @@ const createNewEventTemplate = (event, isEditing) => {
                   : ``}
                 </header>
                 <section class="event__details">
-                  <section class="event__section  event__section--offers">
+                  ${event.offers.length ? `<section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
                     ${offersTemplate}
-                  </section>
+                  </section>`
+                : ``}
 
-                  <section class="event__section  event__section--destination">
+                  ${event.destination ? `<section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                     <p class="event__destination-description">${event.description}</p>
                     <div class="event__photos-container">
                       ${photosTemplate}
                     </div>
-                  </section>
+                  </section>`
+                : ``}
                 </section>
               </form>
             </li>`
@@ -142,16 +143,16 @@ const createNewEventTemplate = (event, isEditing) => {
 
 
 export default class EditEventView extends SmartView {
-  #event = null;
   #isEditing = true;
 
   constructor(event = BLANK_EVENT) {
     super();
-    this.#event = event;
+    this._data = {...event}
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createNewEventTemplate(this.#event, this.#isEditing);
+    return createNewEventTemplate(this._data, this.#isEditing);
   }
 
   setSaveButtonHandler = (callback) => {
@@ -168,9 +169,70 @@ export default class EditEventView extends SmartView {
     }
   }
 
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-list')
+      .addEventListener('click', this.#eventTypeChangeHandler);
+    this.element.querySelector('.event__input--price')
+      .addEventListener('input', this.#eventPriceChangeHandler);
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('input', this.#eventDestinationChangeHandler);
+    this.element.querySelector('#event-start-time-1')
+      .addEventListener('input', this.#eventDateStartChangeHandler);
+    this.element.querySelector('#event-end-time-1')
+      .addEventListener('input', this.#eventDateEndChangeHandler);
+  }
+
+  #eventTypeChangeHandler = (e) => {
+    e.preventDefault();
+    if(!e.target.innerText) {
+      return;
+    }
+    
+    this.updateData({type: e.target.innerText}, false)
+  }
+
+  #eventPriceChangeHandler = (e) => {
+    e.preventDefault();
+
+    if(!e.target.value || isNaN(Number(e.target.value))) {
+      return;
+    }
+    
+    this.updateData({price: e.target.value}, true)
+  }
+  
+  #eventDestinationChangeHandler = (e) => {
+    e.preventDefault();
+
+    if(!e.target.value) {
+      return;
+    }
+    
+    this.updateData({destination: e.target.value}, true)
+  }
+
+  #eventDateStartChangeHandler = (e) => {
+    e.preventDefault();
+
+    if(!e.target.value) {
+      return;
+    }
+    
+    this.updateData({startDate: e.target.value}, true)
+  }
+  #eventDateEndChangeHandler = (e) => {
+    e.preventDefault();
+
+    if(!e.target.value) {
+      return;
+    }
+    
+    this.updateData({finishDate: e.target.value}, true)
+  }
+
   #handleSaveButtonClick = (e) => {
     e.preventDefault();
-    this._callback.saveEvent(this.#event);
+    this._callback.saveEvent(this._data);
   }
 
   #handleCancelButtonClick = (e) => {
@@ -178,4 +240,9 @@ export default class EditEventView extends SmartView {
     this._callback.cancelEditEvent();
   }
 
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setCancelButtonHandler(this._callback.cancelEditEvent)
+    this.setSaveButtonHandler(this._callback.saveEvent)
+  }
 }

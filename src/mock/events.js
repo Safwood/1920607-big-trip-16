@@ -75,18 +75,7 @@ export const offersTypes = [
   },
   {
     'type': 'Bus',
-    'offers': [
-      {
-        'id': 1,
-        'title': 'Upgrade to a business class',
-        'price': 120
-      },
-      {
-        'id': 2,
-        'title': 'Rent mini-bus',
-        'price': 500
-      }
-    ]
+    'offers': []
   },
   {
     'type': 'Train',
@@ -150,33 +139,11 @@ export const offersTypes = [
   },
   {
     'type': 'Check-in',
-    'offers': [
-      {
-        'id': 1,
-        'title': 'Check-in online',
-        'price': 20
-      },
-      {
-        'id': 2,
-        'title': 'Add breakfast',
-        'price': 50
-      },
-    ]
+    'offers': []
   },
   {
     'type': 'Sightseeing',
-    'offers': [
-      {
-        'id': 1,
-        'title': 'Visit museum',
-        'price': 50
-      },
-      {
-        'id': 2,
-        'title': 'Order tour guide',
-        'price': 200
-      }
-    ]
+    'offers': []
   },
   {
     'type': 'Restaurant',
