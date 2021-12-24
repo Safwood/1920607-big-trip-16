@@ -18,5 +18,5 @@ export const removeElement = (array, element) => {
     return;
   }
 
-  return array.filter(item => item.id !== element.id)
+  return array.filter((item) => item.id !== element.id);
 };

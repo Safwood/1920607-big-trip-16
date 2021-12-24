@@ -135,7 +135,7 @@ export default class EditEventView extends SmartView {
 
   setDeleteButtonHandler = (callback) => {
     if(!this.#isEditing) {
-      return
+      return;
     }
     this._callback.deleteEvent = callback;
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#handleDeleteButtonClick);
