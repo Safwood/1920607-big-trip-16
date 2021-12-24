@@ -133,6 +133,14 @@ export default class EditEventView extends SmartView {
     }
   }
 
+  setDeleteButtonHandler = (callback) => {
+    if(!this.#isEditing) {
+      return
+    }
+    this._callback.deleteEvent = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#handleDeleteButtonClick);
+  }
+
   #setInnerHandlers = () => {
     this.element.querySelector('.event__type-list')
       .addEventListener('click', this.#eventTypeChangeHandler);
@@ -225,6 +233,11 @@ export default class EditEventView extends SmartView {
   #handleCancelButtonClick = (e) => {
     e.preventDefault();
     this._callback.cancelEditEvent();
+  }
+
+  #handleDeleteButtonClick = (e) => {
+    e.preventDefault();
+    this._callback.deleteEvent(this._data);
   }
 
   restoreHandlers = () => {

@@ -9,12 +9,14 @@ export default class EventPresenter {
   #newEventElementView = null;
   #handleChange = null;
   #changeMode = null;
+  #deleteEvent = null;
   #mode = Mode.DEFAULT;
 
-  constructor(container, handleChange, changeMode) {
+  constructor(container, handleChange, changeMode, deleteEvent) {
     this.#container = container;
     this.#handleChange = handleChange;
     this.#changeMode = changeMode;
+    this.#deleteEvent = deleteEvent;
   }
 
   init = (event) => {
@@ -56,6 +58,12 @@ export default class EventPresenter {
     this.#mode = Mode.DEFAULT;
   };
 
+  #removeCard = () => {
+    const parent = this.#newEventElementView.element.parentElement;
+    parent.removeChild(this.#newEventElementView.element);
+    this.#mode = Mode.DEFAULT;
+  };
+
   #handleFavoriteClick = () => {
     this.#handleChange({...this.#event, isFavorite: !this.#event.isFavorite});
   }
@@ -81,6 +89,11 @@ export default class EventPresenter {
     this.#newEventElementView.setSaveButtonHandler((event) => {
       this.#handleChange(event);
       this.#replaceFormToCard();
+    });
+
+    this.#newEventElementView.setDeleteButtonHandler((event) => {
+      this.#deleteEvent(event);
+      this.#removeCard();
     });
 
     this.#newEventElementView.setCancelButtonHandler(this.#replaceFormToCard);
