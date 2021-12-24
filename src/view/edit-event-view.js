@@ -2,8 +2,8 @@ import SmartView from './smart-view';
 import { BLANK_EVENT, getTime, convertDateWithDay, eventTypes } from 'utils';
 import { offersTypes } from '../mock/events';
 
-const createOffersTemplate = (offers, type) => 
-`<div class="event__available-offers">
+const createOffersTemplate = (offers, type) =>
+  `<div class="event__available-offers">
   ${offers.map((offer) => `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" data-offer-id="${offer.id}" id="event-offer-${type}-${offer.id}" type="checkbox" name="event-offer-${type}" ${offer.checked ? 'checked' : ''}>
     <label class="event__offer-label"  for="event-offer-${type}-${offer.id}">
@@ -15,15 +15,15 @@ const createOffersTemplate = (offers, type) =>
 </div>`;
 
 const createAllEventTypesTemplate = () =>
-`<div class="event__type-list">
+  `<div class="event__type-list">
   <fieldset class="event__type-group">
     <legend class="visually-hidden">Event type</legend>
-    ${eventTypes.map(event => `<div class="event__type-item">
+    ${eventTypes.map((event) => `<div class="event__type-item">
     <input id="event-type-${event.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value=${event.toLowerCase()}>
     <label class="event__type-label  event__type-label--${event.toLowerCase()}" for="event-type-${event.toLowerCase()}-1">${event}</label>
     </div>`).join('')}
   </fieldset>
-</div>`
+</div>`;
 
 const createPhotoListTemplate = (photos) => `<div class="event__photos-tape">
   ${photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('')}
@@ -83,14 +83,14 @@ const createNewEventTemplate = (event, isEditing) => {
                   ${isEditing ? `<button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
                   </button>`
-                  : ``}
+    : ''}
                 </header>
                 <section class="event__details">
                   ${event.offers.length ? `<section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
                     ${offersTemplate}
                   </section>`
-                : ``}
+    : ''}
 
                   ${event.destination ? `<section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -99,10 +99,10 @@ const createNewEventTemplate = (event, isEditing) => {
                       ${photosTemplate}
                     </div>
                   </section>`
-                : ``}
+    : ''}
                 </section>
               </form>
-            </li>`
+            </li>`;
 };
 
 
@@ -111,7 +111,7 @@ export default class EditEventView extends SmartView {
 
   constructor(event = BLANK_EVENT) {
     super();
-    this._data = {...event}
+    this._data = {...event};
     this.#setInnerHandlers();
   }
 
@@ -146,8 +146,8 @@ export default class EditEventView extends SmartView {
       .addEventListener('input', this.#eventDateEndChangeHandler);
     if(this._data.offers.length) {
       this.element.querySelectorAll('.event__offer-checkbox')
-      .forEach(element => element
-        .addEventListener('click', this.#eventOffersToggleHandler))
+        .forEach((element) => element
+          .addEventListener('click', this.#eventOffersToggleHandler));
     }
   }
 
@@ -157,9 +157,9 @@ export default class EditEventView extends SmartView {
       return;
     }
 
-    const avalableOffers = offersTypes.filter(offer => offer.type === e.target.innerText)
-    
-    this.updateData({type: e.target.innerText, offers: avalableOffers[0].offers}, false)
+    const avalableOffers = offersTypes.filter((offer) => offer.type === e.target.innerText);
+
+    this.updateData({type: e.target.innerText, offers: avalableOffers[0].offers}, false);
   }
 
   #eventOffersToggleHandler = (e) => {
@@ -167,14 +167,14 @@ export default class EditEventView extends SmartView {
     if(!e.currentTarget.dataset.offerId) {
       return;
     }
-    
-    const newOffers = [...this._data.offers].map(offer => {
+
+    const newOffers = [...this._data.offers].map((offer) => {
       if(offer.id === Number(e.currentTarget.dataset.offerId)) {
         offer.checked = !offer.checked;
       }
-      return offer
-    })
-    this.updateData({offers: newOffers}, false)
+      return offer;
+    });
+    this.updateData({offers: newOffers}, false);
   }
 
   #eventPriceChangeHandler = (e) => {
@@ -183,18 +183,18 @@ export default class EditEventView extends SmartView {
     if(!e.target.value || isNaN(Number(e.target.value))) {
       return;
     }
-    
-    this.updateData({price: e.target.value}, true)
+
+    this.updateData({price: e.target.value}, true);
   }
-  
+
   #eventDestinationChangeHandler = (e) => {
     e.preventDefault();
 
     if(!e.target.value) {
       return;
     }
-    
-    this.updateData({destination: e.target.value}, true)
+
+    this.updateData({destination: e.target.value}, true);
   }
 
   #eventDateStartChangeHandler = (e) => {
@@ -203,8 +203,8 @@ export default class EditEventView extends SmartView {
     if(!e.target.value) {
       return;
     }
-    
-    this.updateData({startDate: e.target.value}, true)
+
+    this.updateData({startDate: e.target.value}, true);
   }
 
   #eventDateEndChangeHandler = (e) => {
@@ -213,8 +213,8 @@ export default class EditEventView extends SmartView {
     if(!e.target.value) {
       return;
     }
-    
-    this.updateData({finishDate: e.target.value}, true)
+
+    this.updateData({finishDate: e.target.value}, true);
   }
 
   #handleSaveButtonClick = (e) => {
@@ -229,7 +229,7 @@ export default class EditEventView extends SmartView {
 
   restoreHandlers = () => {
     this.#setInnerHandlers();
-    this.setCancelButtonHandler(this._callback.cancelEditEvent)
-    this.setSaveButtonHandler(this._callback.saveEvent)
+    this.setCancelButtonHandler(this._callback.cancelEditEvent);
+    this.setSaveButtonHandler(this._callback.saveEvent);
   }
 }
