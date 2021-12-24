@@ -1,5 +1,5 @@
 import SmartView from './smart-view';
-import { BLANK_EVENT, getTime, convertDateWithDay } from 'utils';
+import { BLANK_EVENT, getTime, convertDateWithDay, eventTypes } from 'utils';
 
 const createOffersTemplate = (offers, type) => `<div class="event__available-offers">
   ${offers.map((offer) => `<div class="event__offer-selector">
@@ -12,6 +12,17 @@ const createOffersTemplate = (offers, type) => `<div class="event__available-off
   </div>`)}  
 </div>`;
 
+const createAllEventTypesTemplate = () =>
+`<div class="event__type-list">
+  <fieldset class="event__type-group">
+    <legend class="visually-hidden">Event type</legend>
+    ${eventTypes.map(event => `<div class="event__type-item">
+    <input id="event-type-${event.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value=${event.toLowerCase()}>
+    <label class="event__type-label  event__type-label--${event.toLowerCase()}" for="event-type-${event.toLowerCase()}-1">${event}</label>
+    </div>`).join('')}
+  </fieldset>
+</div>`
+
 const createPhotoListTemplate = (photos) => `<div class="event__photos-tape">
   ${photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('')}
 </div>`;
@@ -23,6 +34,7 @@ const createNewEventTemplate = (event, isEditing) => {
   const startTime = getTime(event.startDate);
   const photosTemplate = createPhotoListTemplate(event.photos);
   const offersTemplate = createOffersTemplate(event.offers, event.type);
+  const eventTypesTemplate = createAllEventTypesTemplate();
 
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
@@ -33,57 +45,7 @@ const createNewEventTemplate = (event, isEditing) => {
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${event.type}.png" alt="Event type icon">
                     </label>
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-
-                    <div class="event__type-list">
-                      <fieldset class="event__type-group">
-                        <legend class="visually-hidden">Event type</legend>
-
-                        <div class="event__type-item">
-                          <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                          <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                          <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                          <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                          <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                          <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-                          <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                          <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                          <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-                        </div>
-
-                        <div class="event__type-item">
-                          <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                          <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-                        </div>
-                      </fieldset>
-                    </div>
+                    ${eventTypesTemplate}
                   </div>
 
                   <div class="event__field-group  event__field-group--destination">
@@ -229,6 +191,31 @@ export default class EditEventView extends SmartView {
     
     this.updateData({finishDate: e.target.value}, true)
   }
+
+  // static parseEventToData = (event) => ({...event,
+  //   type: event.eventType !== null,
+  //   destination: '',
+  // });
+
+  // static parseDataToEvent = (data) => {
+  //   const event = {...data};
+
+    // if (!event.isDueDate) {
+    //   event.dueDate = null;
+    // }
+
+    // if (!event.isRepeating) {
+    //   event.repeating = {
+    //     mo: false,
+        
+    //   };
+    // }
+
+    // delete event.isDueDate;
+    // delete event.isRepeating;
+
+  //   return event;
+  // }
 
   #handleSaveButtonClick = (e) => {
     e.preventDefault();
