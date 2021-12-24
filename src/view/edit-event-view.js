@@ -1,5 +1,6 @@
 import SmartView from './smart-view';
 import { BLANK_EVENT, getTime, convertDateWithDay, eventTypes } from 'utils';
+import { offersTypes } from '../mock/events';
 
 const createOffersTemplate = (offers, type) => 
 `<div class="event__available-offers">
@@ -155,8 +156,10 @@ export default class EditEventView extends SmartView {
     if(!e.target.innerText) {
       return;
     }
+
+    const avalableOffers = offersTypes.filter(offer => offer.type === e.target.innerText)
     
-    this.updateData({type: e.target.innerText}, false)
+    this.updateData({type: e.target.innerText, offers: avalableOffers[0].offers}, false)
   }
 
   #eventOffersToggleHandler = (e) => {
@@ -203,6 +206,7 @@ export default class EditEventView extends SmartView {
     
     this.updateData({startDate: e.target.value}, true)
   }
+
   #eventDateEndChangeHandler = (e) => {
     e.preventDefault();
 
