@@ -9,6 +9,7 @@ import SortingPresenter from 'presenter/sorting-presenter';
 
 export default class TripPresenter {
   #events = null;
+  #pointsModel = null;
   #totalPrice = null;
   #menuContainer = null;
   #tripFilterContainer = null;
@@ -25,11 +26,12 @@ export default class TripPresenter {
   #eventListView = new EventListView();
   #noEventView = new NoEventView();
 
-  constructor(menuContainer, tripFilterContainer, tripMain, tripEvents) {
+  constructor(pointsModel, menuContainer, tripFilterContainer, tripMain, tripEvents) {
     this.#menuContainer = menuContainer;
     this.#tripFilterContainer = tripFilterContainer;
     this.#tripMain = tripMain;
     this.#tripEvents = tripEvents;
+    this.#pointsModel = pointsModel;
   }
 
 
@@ -40,6 +42,10 @@ export default class TripPresenter {
 
     this.#renderEventListView();
     this.#renderPageContent();
+  }
+
+  get events() {
+    this.#events = this.#pointsModel.events;
   }
 
   #handleModeChange = () => {

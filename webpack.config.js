@@ -25,6 +25,7 @@ module.exports = {
             view: path.resolve(__dirname, './src/view/'),
             presenter: path.resolve(__dirname, './src/presenter/'),
             utils: path.resolve(__dirname, './src/utils/'),
+            model: path.resolve(__dirname, './src/model/'),
           },
     }
 }
