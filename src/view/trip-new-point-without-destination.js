@@ -1,5 +1,8 @@
 import AbstractView from './abstract-view';
-import { BLANK_EVENT, getTime, convertDateWithDay } from 'utils';
+import { BLANK_EVENT } from 'utils';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createOffersTemplate = (offers, type) => `<div class="event__available-offers">
   ${offers.map((offer) => `<div class="event__offer-selector">
@@ -17,11 +20,6 @@ const createPhotoListTemplate = (photos) => `<div class="event__photos-tape">
 </div>`;
 
 const createTripNewEventTemplate = (event) => {
-
-  const startDay = convertDateWithDay(event.startDate);
-  const finishDay = convertDateWithDay(event.finishDate);
-  const finishTime = getTime(event.finishDate);
-  const startTime = getTime(event.startDate);
   const photosTemplate = createPhotoListTemplate(event.photos);
   const offersTemplate = createOffersTemplate(event.offers, event.type);
 
@@ -101,10 +99,10 @@ const createTripNewEventTemplate = (event) => {
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDay} ${startTime}">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishDay} ${finishTime}">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -139,10 +137,13 @@ const createTripNewEventTemplate = (event) => {
 
 export default class TripNewEventView extends AbstractView {
   #event = null;
+  #datePickerStart = null;
+  #datePickerEnd = null;
 
   constructor(event = BLANK_EVENT) {
     super();
     this.#event = event;
+    this.#setDatePickers();
   }
 
   get template() {
@@ -159,6 +160,14 @@ export default class TripNewEventView extends AbstractView {
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#handleCancelButtonClick);
   }
 
+  #handleDateStartChange = (data) => {
+    console.log(data[0])
+  }
+
+  #handleDateEndChange = (data) => {
+    console.log(data[0])
+  }
+
   #handleSaveButtonClick = (e) => {
     e.preventDefault();
     this._callback.saveEvent(this.#event);
@@ -169,4 +178,18 @@ export default class TripNewEventView extends AbstractView {
     this._callback.cancelEditEvent();
   }
 
+  #setDatePickers = () => {
+    const dateStartContainer = this.element.querySelector('#event-start-time-1');
+    const dateEndContainer = this.element.querySelector('#event-end-time-1');
+    this.#datePickerStart = flatpickr(dateStartContainer, {
+      onChange: this.#handleDateStartChange,
+      dateFormat: "d/m/y H/i",
+      defaultDate: this.#event.startDate,
+    })
+    this.#datePickerEnd = flatpickr(dateEndContainer, {
+      onChange: this.#handleDateEndChange,
+      dateFormat: "d/m/y H/i",
+      defaultDate: this.#event.finishDate,
+    })
+  }
 }
