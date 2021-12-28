@@ -82,16 +82,16 @@ const createNewEventTemplate = (event, isEditing) => {
                 ${isEditing ? `<button class="event__rollup-btn" type="button">
                   <span class="visually-hidden">Open event</span>
                 </button>`
-  : ''}
+    : ''}
               </header>
               <section class="event__details">
                 ${event.offers.length ? `<section class="event__section  event__section--offers">
                   <h3 class="event__section-title  event__section-title--offers">Offers</h3>
                   ${offersTemplate}
                 </section>`
-  : ''}
+    : ''}
 
-${event.destination ? `<section class="event__section  event__section--destination">
+  ${event.destination ? `<section class="event__section  event__section--destination">
   <h3 class="event__section-title  event__section-title--destination">Destination</h3>
   <p class="event__destination-description">${event.description}</p>
   <div class="event__photos-container">
@@ -102,14 +102,14 @@ ${event.destination ? `<section class="event__section  event__section--destinati
     </section>
     </form>
     </li>`;
-  };
-                    
-                    
+};
+
+
 export default class EditEventView extends SmartView {
   #datePickerStart = null;
   #datePickerEnd = null;
   #isEditing = true;
-  
+
   constructor(event = BLANK_EVENT) {
     super();
     this._data = {...event};
@@ -150,10 +150,6 @@ export default class EditEventView extends SmartView {
       .addEventListener('input', this.#eventPriceChangeHandler);
     this.element.querySelector('.event__input--destination')
       .addEventListener('input', this.#eventDestinationChangeHandler);
-    this.element.querySelector('#event-start-time-1')
-      .addEventListener('input', this.#eventDateStartChangeHandler);
-    this.element.querySelector('#event-end-time-1')
-      .addEventListener('input', this.#eventDateEndChangeHandler);
     if(this._data.offers.length) {
       this.element.querySelectorAll('.event__offer-checkbox')
         .forEach((element) => element
@@ -207,26 +203,6 @@ export default class EditEventView extends SmartView {
     this.updateData({destination: e.target.value}, true);
   }
 
-  #eventDateStartChangeHandler = (e) => {
-    e.preventDefault();
-
-    if(!e.target.value) {
-      return;
-    }
-
-    this.updateData({startDate: e.target.value}, true);
-  }
-
-  #eventDateEndChangeHandler = (e) => {
-    e.preventDefault();
-
-    if(!e.target.value) {
-      return;
-    }
-
-    this.updateData({finishDate: e.target.value}, true);
-  }
-
   #handleSaveButtonClick = (e) => {
     e.preventDefault();
     this._callback.saveEvent(this._data);
@@ -243,11 +219,11 @@ export default class EditEventView extends SmartView {
   }
 
   #handleDateStartChange = (data) => {
-    console.log(data[0])
+    this.updateData({startDate: data[0]}, true);
   }
 
   #handleDateEndChange = (data) => {
-    console.log(data[0])
+    this.updateData({finishDate: data[0]}, true);
   }
 
   #setDatePickers = () => {
@@ -255,14 +231,16 @@ export default class EditEventView extends SmartView {
     const dateEndContainer = this.element.querySelector('#event-end-time-1');
     this.#datePickerStart = flatpickr(dateStartContainer, {
       onChange: this.#handleDateStartChange,
-      dateFormat: "d/m/y H/i",
+      dateFormat: 'd/m/y H/i',
+      enableTime: true,
       defaultDate: this._data.startDate,
-    })
+    });
     this.#datePickerEnd = flatpickr(dateEndContainer, {
       onChange: this.#handleDateEndChange,
-      dateFormat: "d/m/y H/i",
+      dateFormat: 'd/m/y H/i',
+      enableTime: true,
       defaultDate: this._data.finishDate,
-    })
+    });
   }
 
   restoreHandlers = () => {
