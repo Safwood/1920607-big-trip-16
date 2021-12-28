@@ -1,9 +1,9 @@
 import SiteMenuView from 'view/site-menu-view';
 import TripFilterView from 'view/trip-filter-view';
 import TripInfoView from 'view/trip-info-view';
-import EventListView from 'view/trip-event-list';
+import EventListView from 'view/event-list-view';
 import NoEventView from 'view/no-event-view';
-import { countTotalSum, render, RenderPosition, updateItem, sort, SortingType } from 'utils';
+import { countTotalSum, render, RenderPosition, updateItem, sort, SortingType, removeElement } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
 import SortingPresenter from 'presenter/sorting-presenter';
 
@@ -57,6 +57,12 @@ export default class TripPresenter {
     this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
   }
 
+  #handleEventDelete = (deletedEvent) => {
+    this.#events = removeElement(this.#events, deletedEvent);
+    this.#eventPresenters.get(deletedEvent.id).destroy();
+    this.#eventPresenters.delete(deletedEvent.id);
+  }
+
   #renderEventListView = () => {
     render(this.#tripEvents, this.#eventListView, RenderPosition.BEFORREEND);
     this.#tripEventsList = document.querySelector('.trip-events__list');
@@ -98,7 +104,7 @@ export default class TripPresenter {
     }
 
     for(const event of this.#events) {
-      const eventPresenter = new EventPresenter(this.#tripEventsList, this.#handleEventChange, this.#handleModeChange);
+      const eventPresenter = new EventPresenter(this.#tripEventsList, this.#handleEventChange, this.#handleModeChange, this.#handleEventDelete);
       eventPresenter.init(event);
       this.#eventPresenters.set(event.id, eventPresenter);
     }
