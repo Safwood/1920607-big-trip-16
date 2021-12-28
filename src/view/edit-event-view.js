@@ -1,6 +1,9 @@
 import SmartView from './smart-view';
-import { BLANK_EVENT, getTime, convertDateWithDay, eventTypes } from 'utils';
+import { BLANK_EVENT, eventTypes } from 'utils';
 import { offersTypes } from '../mock/events';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createOffersTemplate = (offers, type) =>
   `<div class="event__available-offers">
@@ -30,10 +33,6 @@ const createPhotoListTemplate = (photos) => `<div class="event__photos-tape">
 </div>`;
 
 const createNewEventTemplate = (event, isEditing) => {
-  const startDay = convertDateWithDay(event.startDate);
-  const finishDay = convertDateWithDay(event.finishDate);
-  const finishTime = getTime(event.finishDate);
-  const startTime = getTime(event.startDate);
   const photosTemplate = createPhotoListTemplate(event.photos);
   const offersTemplate = createOffersTemplate(event.offers, event.type);
   const eventTypesTemplate = createAllEventTypesTemplate();
@@ -64,10 +63,10 @@ const createNewEventTemplate = (event, isEditing) => {
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDay} ${startTime}">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishDay} ${finishTime}">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -76,42 +75,45 @@ const createNewEventTemplate = (event, isEditing) => {
                       &euro;
                     </label>
                     <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${event.price}">
-                  </div>
+                </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">${isEditing ? 'Delete' : 'Cancel'}</button>
-                  ${isEditing ? `<button class="event__rollup-btn" type="button">
-                    <span class="visually-hidden">Open event</span>
-                  </button>`
+                <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+                <button class="event__reset-btn" type="reset">${isEditing ? 'Delete' : 'Cancel'}</button>
+                ${isEditing ? `<button class="event__rollup-btn" type="button">
+                  <span class="visually-hidden">Open event</span>
+                </button>`
     : ''}
-                </header>
-                <section class="event__details">
-                  ${event.offers.length ? `<section class="event__section  event__section--offers">
-                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-                    ${offersTemplate}
-                  </section>`
+              </header>
+              <section class="event__details">
+                ${event.offers.length ? `<section class="event__section  event__section--offers">
+                  <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+                  ${offersTemplate}
+                </section>`
     : ''}
 
-                  ${event.destination ? `<section class="event__section  event__section--destination">
-                    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">${event.description}</p>
-                    <div class="event__photos-container">
-                      ${photosTemplate}
-                    </div>
-                  </section>`
+  ${event.destination ? `<section class="event__section  event__section--destination">
+  <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+  <p class="event__destination-description">${event.description}</p>
+  <div class="event__photos-container">
+    ${photosTemplate}
+    </div>
+    </section>`
     : ''}
-                </section>
-              </form>
-            </li>`;
+    </section>
+    </form>
+    </li>`;
 };
 
 
 export default class EditEventView extends SmartView {
+  #datePickerStart = null;
+  #datePickerEnd = null;
   #isEditing = true;
 
   constructor(event = BLANK_EVENT) {
     super();
     this._data = {...event};
+    this.#setDatePickers();
     this.#setInnerHandlers();
   }
 
@@ -148,10 +150,6 @@ export default class EditEventView extends SmartView {
       .addEventListener('input', this.#eventPriceChangeHandler);
     this.element.querySelector('.event__input--destination')
       .addEventListener('input', this.#eventDestinationChangeHandler);
-    this.element.querySelector('#event-start-time-1')
-      .addEventListener('input', this.#eventDateStartChangeHandler);
-    this.element.querySelector('#event-end-time-1')
-      .addEventListener('input', this.#eventDateEndChangeHandler);
     if(this._data.offers.length) {
       this.element.querySelectorAll('.event__offer-checkbox')
         .forEach((element) => element
@@ -205,26 +203,6 @@ export default class EditEventView extends SmartView {
     this.updateData({destination: e.target.value}, true);
   }
 
-  #eventDateStartChangeHandler = (e) => {
-    e.preventDefault();
-
-    if(!e.target.value) {
-      return;
-    }
-
-    this.updateData({startDate: e.target.value}, true);
-  }
-
-  #eventDateEndChangeHandler = (e) => {
-    e.preventDefault();
-
-    if(!e.target.value) {
-      return;
-    }
-
-    this.updateData({finishDate: e.target.value}, true);
-  }
-
   #handleSaveButtonClick = (e) => {
     e.preventDefault();
     this._callback.saveEvent(this._data);
@@ -238,6 +216,31 @@ export default class EditEventView extends SmartView {
   #handleDeleteButtonClick = (e) => {
     e.preventDefault();
     this._callback.deleteEvent(this._data);
+  }
+
+  #handleDateStartChange = (data) => {
+    this.updateData({startDate: data[0]}, true);
+  }
+
+  #handleDateEndChange = (data) => {
+    this.updateData({finishDate: data[0]}, true);
+  }
+
+  #setDatePickers = () => {
+    const dateStartContainer = this.element.querySelector('#event-start-time-1');
+    const dateEndContainer = this.element.querySelector('#event-end-time-1');
+    this.#datePickerStart = flatpickr(dateStartContainer, {
+      onChange: this.#handleDateStartChange,
+      dateFormat: 'd/m/y H/i',
+      enableTime: true,
+      defaultDate: this._data.startDate,
+    });
+    this.#datePickerEnd = flatpickr(dateEndContainer, {
+      onChange: this.#handleDateEndChange,
+      dateFormat: 'd/m/y H/i',
+      enableTime: true,
+      defaultDate: this._data.finishDate,
+    });
   }
 
   restoreHandlers = () => {
