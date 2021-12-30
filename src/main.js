@@ -12,7 +12,7 @@ const tripMain = document.querySelector('.trip-main');
 const tripEvents = document.querySelector('.trip-events');
 
 const pointsModel = new PointsModel();
-pointsModel.eventPoints = events;
+pointsModel.events = events;
 
 const tripPresenter = new TripPresenter(pointsModel, menuContainer, tripFilterContainer, tripMain, tripEvents);
-tripPresenter.init(events);
+tripPresenter.init();

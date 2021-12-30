@@ -8,7 +8,6 @@ import EventPresenter from 'presenter/event-presenter';
 import SortingPresenter from 'presenter/sorting-presenter';
 
 export default class TripPresenter {
-  #events = null;
   #pointsModel = null;
   #totalPrice = null;
   #menuContainer = null;
@@ -34,18 +33,15 @@ export default class TripPresenter {
     this.#pointsModel = pointsModel;
   }
 
-
-  init = (events) => {
-    this.#events = [...events];
-    this.#totalPrice = countTotalSum(events);
-    this.#tripInfoView = new TripInfoView(this.#totalPrice);
-
-    this.#renderEventListView();
-    this.#renderPageContent();
+  get events() {
+    return sort(this.#pointsModel.events, this.#sortType)
   }
 
-  get events() {
-    this.#events = this.#pointsModel.events;
+  init = () => {
+    this.#totalPrice = countTotalSum(this.events);
+    this.#tripInfoView = new TripInfoView(this.#totalPrice);
+    this.#renderEventListView();
+    this.#renderPageContent();
   }
 
   #handleModeChange = () => {
@@ -53,12 +49,12 @@ export default class TripPresenter {
   }
 
   #handleEventChange = (updatedEvent) => {
-    this.#events = updateItem(this.#events, updatedEvent);
+    this.#pointsModel.changeEvent(updatedEvent);
     this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
   }
 
   #handleEventDelete = (deletedEvent) => {
-    this.#events = removeElement(this.#events, deletedEvent);
+    this.#pointsModel.removeEvent(deletedEvent);
     this.#eventPresenters.get(deletedEvent.id).destroy();
     this.#eventPresenters.delete(deletedEvent.id);
   }
@@ -86,10 +82,13 @@ export default class TripPresenter {
   }
 
   #handleSortTypeChange = (sortingType) => {
+    if(this.#sortType === sortingType) {
+      return
+    }
+    
     this.#sortType = sortingType;
     this.#clearEventList();
     this.#clearSorting();
-    this.#events = sort(this.#events, sortingType);
     this.#renderTripSortingView();
     this.#renderEvents();
   }
@@ -99,11 +98,11 @@ export default class TripPresenter {
   }
 
   #renderEvents = () => {
-    if(!this.#events.length) {
+    if(!this.events.length) {
       this.#renderNoEventView();
     }
 
-    for(const event of this.#events) {
+    for(const event of this.events) {
       const eventPresenter = new EventPresenter(this.#tripEventsList, this.#handleEventChange, this.#handleModeChange, this.#handleEventDelete);
       eventPresenter.init(event);
       this.#eventPresenters.set(event.id, eventPresenter);
