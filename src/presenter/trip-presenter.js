@@ -1,11 +1,11 @@
 import SiteMenuView from 'view/site-menu-view';
-import TripFilterView from 'view/trip-filter-view';
 import TripInfoView from 'view/trip-info-view';
 import EventListView from 'view/event-list-view';
 import NoEventView from 'view/no-event-view';
-import { countTotalSum, render, RenderPosition, sort, SortingType, UserAction, UpdateType } from 'utils';
+import { countTotalSum, render, RenderPosition, sort, SortingType, UserAction, UpdateType, FilterType } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
 import NewEventPresenter from 'presenter/new-event-presenter';
+import FilterPresenter from 'presenter/filter-presenter';
 import SortingPresenter from 'presenter/sorting-presenter';
 
 export default class TripPresenter {
@@ -18,11 +18,12 @@ export default class TripPresenter {
   #tripInfoView = null;
   #tripEventsList = null;
   #sortingPresenter = null;
+  #filterPresenter = null;
   #sortType = SortingType.DAY;
+  #filterType = FilterType.EVERYTHING;
   #eventPresenters = new Map();
 
   #siteMenuView = new SiteMenuView();
-  #tripFilterView = new TripFilterView()
   #eventListView = new EventListView();
   #noEventView = new NoEventView();
 
@@ -115,7 +116,8 @@ export default class TripPresenter {
   }
 
   #renderTripFilterView = () => {
-    render(this.#tripFilterContainer, this.#tripFilterView, RenderPosition.AFTERBEGIN);
+    this.#filterPresenter = new FilterPresenter(this.#tripFilterContainer, this.#filterType, this.#handleFilterChange)
+    this.#filterPresenter.init();
   }
 
   #renderTripInfoView = () => {
@@ -136,6 +138,19 @@ export default class TripPresenter {
     this.#clearEventList();
     this.#clearSorting();
     this.#renderTripSortingView();
+    this.#renderEvents();
+  }
+
+  #handleFilterChange = (filterType) => {
+    if(this.#filterType === filterType) {
+      return
+    }
+    
+    this.#filterType = filterType;
+    
+    this.#clearEventList();
+    this.#clearFilter();
+    this.#renderTripFilterView();
     this.#renderEvents();
   }
 
@@ -171,5 +186,9 @@ export default class TripPresenter {
 
   #clearSorting = () => {
     this.#sortingPresenter.destroy();
+  }
+
+  #clearFilter = () => {
+    this.#filterPresenter.destroy();
   }
 }

@@ -29,6 +29,12 @@ export const SortingType = {
   OFFERS: 'offers',
 };
 
+export const FilterType = {
+  EVERYTHING: 'EVERYTHING',
+  FUTURE: 'FUTURE',
+  PAST: 'PAST'
+}
+
 export const eventTypes = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
 export const UserAction = {
