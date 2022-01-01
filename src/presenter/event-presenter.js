@@ -25,7 +25,7 @@ export default class EventPresenter {
     const prevEventEditView = this.#newEventElementView;
 
     this.#eventElementView = new EventItemView(event);
-    this.#newEventElementView = new EditEventView(event);
+    this.#newEventElementView = new EditEventView(true, event);
 
     this.#setHandlers();
     if(prevEventView === null || prevEventEditView === null) {

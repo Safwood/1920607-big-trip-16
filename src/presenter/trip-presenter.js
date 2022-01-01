@@ -3,8 +3,9 @@ import TripFilterView from 'view/trip-filter-view';
 import TripInfoView from 'view/trip-info-view';
 import EventListView from 'view/event-list-view';
 import NoEventView from 'view/no-event-view';
-import { countTotalSum, render, RenderPosition, updateItem, sort, SortingType, removeElement } from 'utils';
+import { countTotalSum, render, RenderPosition, sort, SortingType } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
+import NewEventPresenter from 'presenter/new-event-presenter';
 import SortingPresenter from 'presenter/sorting-presenter';
 
 export default class TripPresenter {
@@ -47,6 +48,12 @@ export default class TripPresenter {
   #handleModeChange = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   }
+  
+  #handleEventAdd = (addedEvent) => {
+    this.#pointsModel.addEvent(addedEvent);
+    this.#clearEventList()
+    this.#renderEvents()
+  }
 
   #handleEventChange = (updatedEvent) => {
     this.#pointsModel.changeEvent(updatedEvent);
@@ -66,6 +73,13 @@ export default class TripPresenter {
 
   #renderSiteMenuView = () => {
     render(this.#menuContainer, this.#siteMenuView, RenderPosition.AFTERBEGIN);
+  }
+
+  #setAddEventButtonHandler = () => {
+    document.querySelector('.trip-main__event-add-btn').addEventListener('click', () => {
+      const newEventPresenter = new NewEventPresenter(this.#tripEventsList, this.#handleEventAdd)
+      newEventPresenter.init()
+    })
   }
 
   #renderTripFilterView = () => {
@@ -115,6 +129,7 @@ export default class TripPresenter {
     this.#renderSiteMenuView();
     this.#renderTripInfoView();
     this.#renderEvents();
+    this.#setAddEventButtonHandler();
   }
 
   #clearEventList = () => {

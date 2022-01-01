@@ -8,7 +8,7 @@ export const RenderPosition = {
 export const BLANK_EVENT = {
   id: null,
   destination: '',
-  type: '',
+  type: 'Taxi',
   startDate: 0,
   finishDate: 0,
   price: 0,

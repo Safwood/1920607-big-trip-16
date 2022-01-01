@@ -28,11 +28,17 @@ const createAllEventTypesTemplate = () =>
   </fieldset>
 </div>`;
 
-const createPhotoListTemplate = (photos) => `<div class="event__photos-tape">
-  ${photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('')}
-</div>`;
+const createPhotoListTemplate = (photos) => {
+  if(photos.length) {
+    return `<div class="event__photos-tape">
+    ${photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('')}
+  </div>`
+  }
+  return ''
+};
 
 const createNewEventTemplate = (event, isEditing) => {
+  console.log(isEditing)
   const photosTemplate = createPhotoListTemplate(event.photos);
   const offersTemplate = createOffersTemplate(event.offers, event.type);
   const eventTypesTemplate = createAllEventTypesTemplate();
@@ -110,8 +116,9 @@ export default class EditEventView extends SmartView {
   #datePickerEnd = null;
   #isEditing = true;
 
-  constructor(event = BLANK_EVENT) {
+  constructor(isEditing, event = BLANK_EVENT) {
     super();
+    this.#isEditing = isEditing;
     this._data = {...event};
     this.#setDatePickers();
     this.#setInnerHandlers();
