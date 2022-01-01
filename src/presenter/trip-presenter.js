@@ -53,6 +53,7 @@ export default class TripPresenter {
     this.#pointsModel.addEvent(addedEvent);
     this.#clearEventList()
     this.#renderEvents()
+    document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
   }
 
   #handleEventChange = (updatedEvent) => {
@@ -76,9 +77,11 @@ export default class TripPresenter {
   }
 
   #setAddEventButtonHandler = () => {
-    document.querySelector('.trip-main__event-add-btn').addEventListener('click', () => {
+    const addButton = document.querySelector('.trip-main__event-add-btn');
+    addButton.addEventListener('click', () => {
       const newEventPresenter = new NewEventPresenter(this.#tripEventsList, this.#handleEventAdd)
       newEventPresenter.init()
+      addButton.setAttribute('disabled', '');
     })
   }
 
