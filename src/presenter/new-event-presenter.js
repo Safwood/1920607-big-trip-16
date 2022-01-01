@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import {UserAction, UpdateType} from 'utils';
 import EditEventView from 'view/edit-event-view';
 import { render, RenderPosition, remove } from 'utils';
 
@@ -29,16 +30,20 @@ export default class NewEventPresenter {
     if(e.key === 'Esc' || e.key === 'Escape') {
       e.preventDefault();
       this.destroy();
+      document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
     }
   };
 
   #handleCancelClick = () => {
     this.destroy();
+    document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
   }
 
   #setHandlers = () => {
     this.#newEventElementView.setSaveButtonHandler((event) => {
       this.#handleAddNewEvent(
+        UserAction.ADD_EVENT,
+        UpdateType.MINOR,
         {...event, id: nanoid(3)},
       );
   

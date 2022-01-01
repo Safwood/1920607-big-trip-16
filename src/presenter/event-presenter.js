@@ -1,6 +1,6 @@
 import EventItemView from 'view/event-item-view';
 import EditEventView from 'view/edit-event-view';
-import { render, RenderPosition, replace, Mode, remove } from 'utils';
+import { render, RenderPosition, replace, Mode, remove, UserAction, UpdateType } from 'utils';
 
 export default class EventPresenter {
   #container = null;
@@ -65,7 +65,10 @@ export default class EventPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleChange({...this.#event, isFavorite: !this.#event.isFavorite});
+    this.#handleChange(
+      UserAction.UPDATE_EVENT,
+      UpdateType.PATCH,
+      {...this.#event, isFavorite: !this.#event.isFavorite});
   }
 
   #handleEscKeyDown = (e) => {
@@ -87,12 +90,18 @@ export default class EventPresenter {
     );
 
     this.#newEventElementView.setSaveButtonHandler((event) => {
-      this.#handleChange(event);
+      this.#handleChange(
+        UserAction.UPDATE_EVENT,
+        UpdateType.MINOR, 
+        event);
       this.#replaceFormToCard();
     });
 
     this.#newEventElementView.setDeleteButtonHandler((event) => {
-      this.#deleteEvent(event);
+      this.#deleteEvent(
+        UserAction.REMOVE_EVENT,
+        UpdateType.MINOR, 
+        event);
       this.#removeCard();
     });
 

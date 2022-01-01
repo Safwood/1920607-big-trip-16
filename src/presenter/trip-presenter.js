@@ -3,7 +3,7 @@ import TripFilterView from 'view/trip-filter-view';
 import TripInfoView from 'view/trip-info-view';
 import EventListView from 'view/event-list-view';
 import NoEventView from 'view/no-event-view';
-import { countTotalSum, render, RenderPosition, sort, SortingType } from 'utils';
+import { countTotalSum, render, RenderPosition, sort, SortingType, UserAction, UpdateType } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
 import NewEventPresenter from 'presenter/new-event-presenter';
 import SortingPresenter from 'presenter/sorting-presenter';
@@ -32,6 +32,7 @@ export default class TripPresenter {
     this.#tripMain = tripMain;
     this.#tripEvents = tripEvents;
     this.#pointsModel = pointsModel;
+    this.#pointsModel.addObserver(this.#handleModelEvent);
   }
 
   get events() {
@@ -44,25 +45,51 @@ export default class TripPresenter {
     this.#renderEventListView();
     this.#renderPageContent();
   }
-
+  
   #handleModeChange = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   }
+
+  #handleModelEvent = (updateType, updatedEvent) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
+        break;
+      case UpdateType.MINOR:
+        this.#clearEventList()
+        this.#renderEvents()
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
+  }
+
+  #handleViewAction = (actionType, updateType, update) => {
+    switch (actionType) {
+      case UserAction.UPDATE_EVENT:
+        this.#pointsModel.changeEvent(updateType, update);
+        break;
+      case UserAction.ADD_EVENT:
+        this.#pointsModel.addEvent(updateType, update);
+        break;
+      case UserAction.DELETE_EVENT:
+        this.#pointsModel.removeEvent(updateType, update);
+        break;
+    }
+  }
   
-  #handleEventAdd = (addedEvent) => {
-    this.#pointsModel.addEvent(addedEvent);
-    this.#clearEventList()
-    this.#renderEvents()
+  #handleEventAdd = (actionType, updateType, addedEvent) => {
+    this.#handleViewAction(actionType, updateType, addedEvent)
     document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
   }
 
-  #handleEventChange = (updatedEvent) => {
-    this.#pointsModel.changeEvent(updatedEvent);
-    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
+  #handleEventChange = (actionType, updateType, updatedEvent) => {
+    this.#handleViewAction(actionType, updateType, updatedEvent)
   }
 
-  #handleEventDelete = (deletedEvent) => {
-    this.#pointsModel.removeEvent(deletedEvent);
+  #handleEventDelete = (actionType, updateType, deletedEvent) => {
+    this.#handleViewAction(actionType, updateType, deletedEvent)
     this.#eventPresenters.get(deletedEvent.id).destroy();
     this.#eventPresenters.delete(deletedEvent.id);
   }
