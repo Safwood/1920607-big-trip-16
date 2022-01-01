@@ -38,7 +38,6 @@ const createPhotoListTemplate = (photos) => {
 };
 
 const createNewEventTemplate = (event, isEditing) => {
-  console.log(isEditing)
   const photosTemplate = createPhotoListTemplate(event.photos);
   const offersTemplate = createOffersTemplate(event.offers, event.type);
   const eventTypesTemplate = createAllEventTypesTemplate();

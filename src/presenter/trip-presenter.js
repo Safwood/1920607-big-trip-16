@@ -79,6 +79,8 @@ export default class TripPresenter {
   #setAddEventButtonHandler = () => {
     const addButton = document.querySelector('.trip-main__event-add-btn');
     addButton.addEventListener('click', () => {
+      this.#eventPresenters.forEach(presenter => presenter.resetView())
+      this.#sortType = SortingType.DAY;
       const newEventPresenter = new NewEventPresenter(this.#tripEventsList, this.#handleEventAdd)
       newEventPresenter.init()
       addButton.setAttribute('disabled', '');
