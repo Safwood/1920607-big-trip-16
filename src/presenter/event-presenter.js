@@ -90,9 +90,14 @@ export default class EventPresenter {
     );
 
     this.#newEventElementView.setSaveButtonHandler((event) => {
+      const isPriceDifferent = this.#event.price !== event.price;
+      const isDateDifferent = this.#event.startDate !== event.startDate || this.#event.finishDate !== event.finishDate;
+      const isDestinationDifferent = this.#event.destination !== event.destination;
+      const updateType = isPriceDifferent || isDateDifferent || isDestinationDifferent ? UpdateType.MAJOR : UpdateType.MINOR;
+      
       this.#handleChange(
         UserAction.UPDATE_EVENT,
-        UpdateType.MINOR, 
+        updateType, 
         event);
       this.#replaceFormToCard();
     });
