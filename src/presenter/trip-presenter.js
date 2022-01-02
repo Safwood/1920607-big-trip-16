@@ -36,9 +36,9 @@ export default class TripPresenter {
   }
 
   get events() {
-    this.#filterType = this.#filterModel.filter
-    const filteredEvents = filter[this.#filterType](this.#pointsModel.events)
-    return sort(filteredEvents, this.#sortingModel.sortType)
+    this.#filterType = this.#filterModel.filter;
+    const filteredEvents = filter[this.#filterType](this.#pointsModel.events);
+    return sort(filteredEvents, this.#sortingModel.sortType);
   }
 
   init = () => {
@@ -47,7 +47,7 @@ export default class TripPresenter {
     this.#renderEventListView();
     this.#renderPageContent();
   }
-  
+
   #handleModeChange = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   }
@@ -58,12 +58,12 @@ export default class TripPresenter {
         this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
         break;
       case UpdateType.MINOR:
-        this.#clearEventList()
-        this.#renderEvents()
+        this.#clearEventList();
+        this.#renderEvents();
         break;
-        case UpdateType.MAJOR:
-        this.#clearEventList()
-        this.#renderEvents()
+      case UpdateType.MAJOR:
+        this.#clearEventList();
+        this.#renderEvents();
         break;
     }
   }
@@ -81,18 +81,18 @@ export default class TripPresenter {
         break;
     }
   }
-  
+
   #handleEventAdd = (actionType, updateType, addedEvent) => {
-    this.#handleViewAction(actionType, updateType, addedEvent)
+    this.#handleViewAction(actionType, updateType, addedEvent);
     document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
   }
 
   #handleEventChange = (actionType, updateType, updatedEvent) => {
-    this.#handleViewAction(actionType, updateType, updatedEvent)
+    this.#handleViewAction(actionType, updateType, updatedEvent);
   }
 
   #handleEventDelete = (actionType, updateType, deletedEvent) => {
-    this.#handleViewAction(actionType, updateType, deletedEvent)
+    this.#handleViewAction(actionType, updateType, deletedEvent);
     this.#eventPresenters.get(deletedEvent.id).destroy();
     this.#eventPresenters.delete(deletedEvent.id);
   }
@@ -109,13 +109,13 @@ export default class TripPresenter {
   #setAddEventButtonHandler = () => {
     const addButton = document.querySelector('.trip-main__event-add-btn');
     addButton.addEventListener('click', () => {
-      this.#eventPresenters.forEach(presenter => presenter.resetView())
+      this.#eventPresenters.forEach((presenter) => presenter.resetView());
       this.#sortingModel.setSortType(UpdateType.MINOR, SortingType.DAY);
       this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-      const newEventPresenter = new NewEventPresenter(this.#tripEventsList, this.#handleEventAdd)
-      newEventPresenter.init()
+      const newEventPresenter = new NewEventPresenter(this.#tripEventsList, this.#handleEventAdd);
+      newEventPresenter.init();
       addButton.setAttribute('disabled', '');
-    })
+    });
   }
 
   #renderTripInfoView = () => {

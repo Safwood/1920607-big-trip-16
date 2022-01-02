@@ -94,10 +94,10 @@ export default class EventPresenter {
       const isDateDifferent = this.#event.startDate !== event.startDate || this.#event.finishDate !== event.finishDate;
       const isDestinationDifferent = this.#event.destination !== event.destination;
       const updateType = isPriceDifferent || isDateDifferent || isDestinationDifferent ? UpdateType.MAJOR : UpdateType.MINOR;
-      
+
       this.#handleChange(
         UserAction.UPDATE_EVENT,
-        updateType, 
+        updateType,
         event);
       this.#replaceFormToCard();
     });
@@ -105,7 +105,7 @@ export default class EventPresenter {
     this.#newEventElementView.setDeleteButtonHandler((event) => {
       this.#deleteEvent(
         UserAction.REMOVE_EVENT,
-        UpdateType.MINOR, 
+        UpdateType.MINOR,
         event);
       this.#removeCard();
     });

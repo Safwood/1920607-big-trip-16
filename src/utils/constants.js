@@ -33,7 +33,7 @@ export const FilterType = {
   EVERYTHING: 'EVERYTHING',
   FUTURE: 'FUTURE',
   PAST: 'PAST'
-}
+};
 
 export const eventTypes = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
@@ -47,7 +47,7 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR'
-}
+};
 
 export const NoEventTextType = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',

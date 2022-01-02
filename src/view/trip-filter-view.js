@@ -36,7 +36,7 @@ export default class TripFilterView extends AbstractView {
 
   setChangeFilterHandler = (callback) => {
     this._callback.changeFilter = callback;
-    this.element.addEventListener('click', this.#handleFilterChange)
+    this.element.addEventListener('click', this.#handleFilterChange);
   }
 
   #handleFilterChange = (e) => {

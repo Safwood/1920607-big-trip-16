@@ -23,7 +23,7 @@ export default class NewEventPresenter {
     render(this.#container, this.#newEventElementView, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#handleEscKeyDown);
-    this.#setHandlers()
+    this.#setHandlers();
   }
 
   #handleEscKeyDown = (e) => {
@@ -46,12 +46,12 @@ export default class NewEventPresenter {
         UpdateType.MINOR,
         {...event, id: nanoid(3)},
       );
-  
+
       this.destroy();
     });
 
     this.#newEventElementView.setCancelButtonHandler(() => {
-      this.#handleCancelClick()
+      this.#handleCancelClick();
     });
 
   }

@@ -15,12 +15,12 @@ export default class FilterPresenter {
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
-  
+
   init = () => {
     const prevComponent = this.#tripFilterView;
-    this.#tripFilterView = new TripFilterView(this.#filterModel.filter)
+    this.#tripFilterView = new TripFilterView(this.#filterModel.filter);
     this.#addFilterHandler();
-    
+
     if(prevComponent === null) {
       render(this.#container, this.#tripFilterView, RenderPosition.AFTERBEGIN);
       return;
@@ -32,8 +32,8 @@ export default class FilterPresenter {
 
   #addFilterHandler = () => {
     this.#tripFilterView.setChangeFilterHandler((filterType) => {
-      this.#handleFilterChange(filterType)
-    })
+      this.#handleFilterChange(filterType);
+    });
   }
 
   #handleModelEvent = (updateType) => {
@@ -44,9 +44,9 @@ export default class FilterPresenter {
 
   #handleFilterChange = (filterType) => {
     if(this.#filterModel.filter === filterType) {
-      return
+      return;
     }
-    
+
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 

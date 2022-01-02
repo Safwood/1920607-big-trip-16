@@ -32,9 +32,9 @@ const createPhotoListTemplate = (photos) => {
   if(photos.length) {
     return `<div class="event__photos-tape">
     ${photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('')}
-  </div>`
+  </div>`;
   }
-  return ''
+  return '';
 };
 
 const createNewEventTemplate = (event, isEditing) => {

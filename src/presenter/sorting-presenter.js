@@ -18,9 +18,9 @@ export default class SortingPresenter {
 
   init() {
     const prevComponent = this.#tripSortingView;
-    this.#tripSortingView = new TripSortingView(this.#sortingModel.sortType)
+    this.#tripSortingView = new TripSortingView(this.#sortingModel.sortType);
     this.#setHandlers();
-    
+
     if(prevComponent === null) {
       render(this.#container, this.#tripSortingView, RenderPosition.AFTERBEGIN);
       return;
@@ -37,14 +37,14 @@ export default class SortingPresenter {
   }
 
   #handleModelEvent = () => {
-      this.init();
+    this.init();
   }
 
   #handleSortTypeChange = (sortType) => {
     if(this.#sortingModel.sortType === sortType) {
-      return
+      return;
     }
-    
+
     this.#sortingModel.setSortType(UpdateType.MAJOR, sortType);
   }
 
