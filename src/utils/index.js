@@ -11,3 +11,4 @@ export * from './sort';
 export * from './convertDate';
 export * from './abstractObserver';
 export * from './add';
+export * from './filter';
