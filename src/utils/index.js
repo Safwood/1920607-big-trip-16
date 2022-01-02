@@ -9,3 +9,5 @@ export * from './replace';
 export * from './remove';
 export * from './sort';
 export * from './convertDate';
+export * from './chart';
+export * from './statistic';
