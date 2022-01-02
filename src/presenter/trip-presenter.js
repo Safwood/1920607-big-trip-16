@@ -5,19 +5,17 @@ import NoEventView from 'view/no-event-view';
 import { countTotalSum, render, RenderPosition, sort, SortingType, UserAction, UpdateType, filter, remove, FilterType } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
 import NewEventPresenter from 'presenter/new-event-presenter';
-import SortingPresenter from 'presenter/sorting-presenter';
 
 export default class TripPresenter {
   #pointsModel = null;
   #filterModel = null;
+  #sortingModel = null;
   #totalPrice = null;
   #menuContainer = null;
   #tripMain = null;
   #tripEvents = null;
   #tripInfoView = null;
   #tripEventsList = null;
-  #sortingPresenter = null;
-  #sortType = SortingType.DAY;
   #filterType = FilterType.EVERYTHING;
   #eventPresenters = new Map();
 
@@ -25,20 +23,22 @@ export default class TripPresenter {
   #eventListView = new EventListView();
   #noEventView = null;
 
-  constructor(pointsModel, menuContainer, tripMain, tripEvents, filterModel) {
+  constructor(pointsModel, menuContainer, tripMain, tripEvents, filterModel, sortingModel) {
     this.#menuContainer = menuContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#sortingModel = sortingModel;
     this.#tripMain = tripMain;
     this.#tripEvents = tripEvents;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#sortingModel.addObserver(this.#handleModelEvent);
   }
 
   get events() {
     this.#filterType = this.#filterModel.filter
     const filteredEvents = filter[this.#filterType](this.#pointsModel.events)
-    return sort(filteredEvents, this.#sortType)
+    return sort(filteredEvents, this.#sortingModel.sortType)
   }
 
   init = () => {
@@ -110,7 +110,7 @@ export default class TripPresenter {
     const addButton = document.querySelector('.trip-main__event-add-btn');
     addButton.addEventListener('click', () => {
       this.#eventPresenters.forEach(presenter => presenter.resetView())
-      this.#sortType = SortingType.DAY;
+      this.#sortingModel.setSortType(UpdateType.MINOR, SortingType.DAY);
       const newEventPresenter = new NewEventPresenter(this.#tripEventsList, this.#handleEventAdd)
       newEventPresenter.init()
       addButton.setAttribute('disabled', '');
@@ -119,23 +119,6 @@ export default class TripPresenter {
 
   #renderTripInfoView = () => {
     render(this.#tripMain, this.#tripInfoView, RenderPosition.AFTERBEGIN);
-  }
-
-  #renderTripSortingView = () => {
-    this.#sortingPresenter = new SortingPresenter(this.#handleSortTypeChange, this.#sortType);
-    this.#sortingPresenter.init(this.#tripEvents);
-  }
-
-  #handleSortTypeChange = (sortingType) => {
-    if(this.#sortType === sortingType) {
-      return
-    }
-    
-    this.#sortType = sortingType;
-    this.#clearEventList();
-    this.#clearSorting();
-    this.#renderTripSortingView();
-    this.#renderEvents();
   }
 
   #renderNoEventView = () => {
@@ -156,7 +139,6 @@ export default class TripPresenter {
   }
 
   #renderPageContent = () => {
-    this.#renderTripSortingView();
     this.#renderSiteMenuView();
     this.#renderTripInfoView();
     this.#renderEvents();
@@ -170,9 +152,5 @@ export default class TripPresenter {
     if (this.#noEventView) {
       remove(this.#noEventView);
     }
-  }
-
-  #clearSorting = () => {
-    this.#sortingPresenter.destroy();
   }
 }
