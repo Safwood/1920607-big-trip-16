@@ -2,7 +2,7 @@ import SiteMenuView from 'view/site-menu-view';
 import TripInfoView from 'view/trip-info-view';
 import EventListView from 'view/event-list-view';
 import NoEventView from 'view/no-event-view';
-import { countTotalSum, render, RenderPosition, sort, SortingType, UserAction, UpdateType, filter } from 'utils';
+import { countTotalSum, render, RenderPosition, sort, SortingType, UserAction, UpdateType, filter, remove, FilterType } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
 import NewEventPresenter from 'presenter/new-event-presenter';
 import SortingPresenter from 'presenter/sorting-presenter';
@@ -18,11 +18,12 @@ export default class TripPresenter {
   #tripEventsList = null;
   #sortingPresenter = null;
   #sortType = SortingType.DAY;
+  #filterType = FilterType.EVERYTHING;
   #eventPresenters = new Map();
 
   #siteMenuView = new SiteMenuView();
   #eventListView = new EventListView();
-  #noEventView = new NoEventView();
+  #noEventView = null;
 
   constructor(pointsModel, menuContainer, tripMain, tripEvents, filterModel) {
     this.#menuContainer = menuContainer;
@@ -35,8 +36,8 @@ export default class TripPresenter {
   }
 
   get events() {
-    const filterType = this.#filterModel.filter;
-    const filteredEvents = filter[filterType](this.#pointsModel.events)
+    this.#filterType = this.#filterModel.filter
+    const filteredEvents = filter[this.#filterType](this.#pointsModel.events)
     return sort(filteredEvents, this.#sortType)
   }
 
@@ -138,6 +139,7 @@ export default class TripPresenter {
   }
 
   #renderNoEventView = () => {
+    this.#noEventView = new NoEventView(this.#filterType);
     render(this.#tripEvents, this.#noEventView, RenderPosition.BEFORREEND);
   }
 
@@ -164,6 +166,10 @@ export default class TripPresenter {
   #clearEventList = ({changeTotalSum = false, changeRoute = false, changeTotalDurationDates = false} = {}) => {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
+
+    if (this.#noEventView) {
+      remove(this.#noEventView);
+    }
   }
 
   #clearSorting = () => {
