@@ -58,12 +58,12 @@ const createNewEventTemplate = (event, isEditing) => {
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${event.type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${event.destination}" list="#">
-                    <datalist id="destination-list-1">
+                    <select class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value="${event.destination}" value=''>
+                      <option value=""></option>
                       <option value="Amsterdam">Amsterdam</option>
                       <option value="Geneva">Geneva</option>
                       <option value="Chamonix">Chamonix</option>
-                    </datalist>
+                    </select>
                   </div>
 
                   <div class="event__field-group  event__field-group--time">
@@ -79,7 +79,7 @@ const createNewEventTemplate = (event, isEditing) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${event.price}">
+                    <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" name="event-price" value="${event.price}">
                 </div>
 
                 <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -196,7 +196,7 @@ export default class EditEventView extends SmartView {
       return;
     }
 
-    this.updateData({price: e.target.value}, true);
+    this.updateData({price: String(Number(e.target.value))}, true);
   }
 
   #eventDestinationChangeHandler = (e) => {

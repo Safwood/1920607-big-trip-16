@@ -111,6 +111,7 @@ export default class TripPresenter {
     addButton.addEventListener('click', () => {
       this.#eventPresenters.forEach(presenter => presenter.resetView())
       this.#sortingModel.setSortType(UpdateType.MINOR, SortingType.DAY);
+      this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
       const newEventPresenter = new NewEventPresenter(this.#tripEventsList, this.#handleEventAdd)
       newEventPresenter.init()
       addButton.setAttribute('disabled', '');
@@ -145,7 +146,7 @@ export default class TripPresenter {
     this.#setAddEventButtonHandler();
   }
 
-  #clearEventList = ({changeTotalSum = false, changeRoute = false, changeTotalDurationDates = false} = {}) => {
+  #clearEventList = () => {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
 
