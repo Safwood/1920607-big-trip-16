@@ -2,42 +2,42 @@ import SiteMenuView from 'view/site-menu-view';
 import TripInfoView from 'view/trip-info-view';
 import EventListView from 'view/event-list-view';
 import NoEventView from 'view/no-event-view';
-import { countTotalSum, render, RenderPosition, sort, SortingType, UserAction, UpdateType, FilterType } from 'utils';
+import { countTotalSum, render, RenderPosition, sort, SortingType, UserAction, UpdateType, filter } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
 import NewEventPresenter from 'presenter/new-event-presenter';
-import FilterPresenter from 'presenter/filter-presenter';
 import SortingPresenter from 'presenter/sorting-presenter';
 
 export default class TripPresenter {
   #pointsModel = null;
+  #filterModel = null;
   #totalPrice = null;
   #menuContainer = null;
-  #tripFilterContainer = null;
   #tripMain = null;
   #tripEvents = null;
   #tripInfoView = null;
   #tripEventsList = null;
   #sortingPresenter = null;
-  #filterPresenter = null;
   #sortType = SortingType.DAY;
-  #filterType = FilterType.EVERYTHING;
   #eventPresenters = new Map();
 
   #siteMenuView = new SiteMenuView();
   #eventListView = new EventListView();
   #noEventView = new NoEventView();
 
-  constructor(pointsModel, menuContainer, tripFilterContainer, tripMain, tripEvents) {
+  constructor(pointsModel, menuContainer, tripMain, tripEvents, filterModel) {
     this.#menuContainer = menuContainer;
-    this.#tripFilterContainer = tripFilterContainer;
+    this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
     this.#tripMain = tripMain;
     this.#tripEvents = tripEvents;
-    this.#pointsModel = pointsModel;
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get events() {
-    return sort(this.#pointsModel.events, this.#sortType)
+    const filterType = this.#filterModel.filter;
+    const filteredEvents = filter[filterType](this.#pointsModel.events)
+    return sort(filteredEvents, this.#sortType)
   }
 
   init = () => {
@@ -60,8 +60,9 @@ export default class TripPresenter {
         this.#clearEventList()
         this.#renderEvents()
         break;
-      case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
+        case UpdateType.MAJOR:
+        this.#clearEventList()
+        this.#renderEvents()
         break;
     }
   }
@@ -115,11 +116,6 @@ export default class TripPresenter {
     })
   }
 
-  #renderTripFilterView = () => {
-    this.#filterPresenter = new FilterPresenter(this.#tripFilterContainer, this.#filterType, this.#handleFilterChange)
-    this.#filterPresenter.init();
-  }
-
   #renderTripInfoView = () => {
     render(this.#tripMain, this.#tripInfoView, RenderPosition.AFTERBEGIN);
   }
@@ -141,19 +137,6 @@ export default class TripPresenter {
     this.#renderEvents();
   }
 
-  #handleFilterChange = (filterType) => {
-    if(this.#filterType === filterType) {
-      return
-    }
-    
-    this.#filterType = filterType;
-    
-    this.#clearEventList();
-    this.#clearFilter();
-    this.#renderTripFilterView();
-    this.#renderEvents();
-  }
-
   #renderNoEventView = () => {
     render(this.#tripEvents, this.#noEventView, RenderPosition.BEFORREEND);
   }
@@ -172,23 +155,18 @@ export default class TripPresenter {
 
   #renderPageContent = () => {
     this.#renderTripSortingView();
-    this.#renderTripFilterView();
     this.#renderSiteMenuView();
     this.#renderTripInfoView();
     this.#renderEvents();
     this.#setAddEventButtonHandler();
   }
 
-  #clearEventList = () => {
+  #clearEventList = ({changeTotalSum = false, changeRoute = false, changeTotalDurationDates = false} = {}) => {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
   }
 
   #clearSorting = () => {
     this.#sortingPresenter.destroy();
-  }
-
-  #clearFilter = () => {
-    this.#filterPresenter.destroy();
   }
 }

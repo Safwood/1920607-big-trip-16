@@ -1,6 +1,8 @@
 import {  generateEvent } from 'utils';
 import TripPresenter from 'presenter/trip-presenter';
+import FilterPresenter from 'presenter/filter-presenter';
 import PointsModel from 'model/points-model';
+import FilterModel from 'model/filter-model';
 
 const EVENT_COUNT = 2;
 
@@ -14,5 +16,10 @@ const tripEvents = document.querySelector('.trip-events');
 const pointsModel = new PointsModel();
 pointsModel.events = events;
 
-const tripPresenter = new TripPresenter(pointsModel, menuContainer, tripFilterContainer, tripMain, tripEvents);
+const filterModel = new FilterModel();
+
+const tripPresenter = new TripPresenter(pointsModel, menuContainer, tripMain, tripEvents, filterModel);
+const filterPresenter = new FilterPresenter(tripFilterContainer, filterModel, pointsModel);
+
 tripPresenter.init();
+filterPresenter.init();
