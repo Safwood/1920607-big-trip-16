@@ -257,7 +257,7 @@ export default class EditEventView extends SmartView {
   }
 
   restoreHandlers = () => {
-    this.#setDatePickers()
+    this.#setDatePickers();
     this.#setInnerHandlers();
     this.setCancelButtonHandler(this._callback.cancelEditEvent);
     this.setSaveButtonHandler(this._callback.saveEvent);
