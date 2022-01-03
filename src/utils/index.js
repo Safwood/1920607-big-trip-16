@@ -11,3 +11,6 @@ export * from './sort';
 export * from './convertDate';
 export * from './chart';
 export * from './statistic';
+export * from './abstractObserver';
+export * from './add';
+export * from './filter';

@@ -27,9 +27,6 @@ export const sort = (array, sortType) => {
     case 'price':
       array.sort((a, b) => a.price - b.price);
       break;
-    case 'offers':
-      array.sort((a, b) => a.offers.length - b.offers.length);
-      break;
   }
 
   return array;

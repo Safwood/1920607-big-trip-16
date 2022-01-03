@@ -2,6 +2,7 @@ import SmartView from './smart-view';
 import { BLANK_EVENT, eventTypes } from 'utils';
 import { offersTypes } from '../mock/events';
 import flatpickr from 'flatpickr';
+import dayjs from 'dayjs';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
@@ -28,9 +29,14 @@ const createAllEventTypesTemplate = () =>
   </fieldset>
 </div>`;
 
-const createPhotoListTemplate = (photos) => `<div class="event__photos-tape">
-  ${photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('')}
-</div>`;
+const createPhotoListTemplate = (photos) => {
+  if(photos.length) {
+    return `<div class="event__photos-tape">
+    ${photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('')}
+  </div>`;
+  }
+  return '';
+};
 
 const createNewEventTemplate = (event, isEditing) => {
   const photosTemplate = createPhotoListTemplate(event.photos);
@@ -53,12 +59,12 @@ const createNewEventTemplate = (event, isEditing) => {
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${event.type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${event.destination}" list="#">
-                    <datalist id="destination-list-1">
+                    <select class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value="${event.destination}" value=''>
+                      <option value=""></option>
                       <option value="Amsterdam">Amsterdam</option>
                       <option value="Geneva">Geneva</option>
                       <option value="Chamonix">Chamonix</option>
-                    </datalist>
+                    </select>
                   </div>
 
                   <div class="event__field-group  event__field-group--time">
@@ -74,7 +80,7 @@ const createNewEventTemplate = (event, isEditing) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${event.price}">
+                    <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" name="event-price" value="${event.price}">
                 </div>
 
                 <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -106,12 +112,11 @@ const createNewEventTemplate = (event, isEditing) => {
 
 
 export default class EditEventView extends SmartView {
-  #datePickerStart = null;
-  #datePickerEnd = null;
   #isEditing = true;
 
-  constructor(event = BLANK_EVENT) {
+  constructor(isEditing, event = BLANK_EVENT) {
     super();
+    this.#isEditing = isEditing;
     this._data = {...event};
     this.#setDatePickers();
     this.#setInnerHandlers();
@@ -190,7 +195,7 @@ export default class EditEventView extends SmartView {
       return;
     }
 
-    this.updateData({price: e.target.value}, true);
+    this.updateData({price: String(Number(e.target.value))}, true);
   }
 
   #eventDestinationChangeHandler = (e) => {
@@ -219,23 +224,31 @@ export default class EditEventView extends SmartView {
   }
 
   #handleDateStartChange = (data) => {
-    this.updateData({startDate: data[0]}, true);
+    if(!this._data.finishDate || dayjs(this._data.finishDate).diff(data[0]) > 0) {
+      this.updateData({startDate: data[0]}, true);
+    } else {
+      this.updateData({startDate: this._data.finishDate}, false);
+    }
   }
 
   #handleDateEndChange = (data) => {
-    this.updateData({finishDate: data[0]}, true);
+    if(!this._data.startDate || dayjs(data[0]).diff(this._data.startDate) > 0) {
+      this.updateData({finishDate: data[0]}, true);
+    } else {
+      this.updateData({finishDate: this._data.startDate}, false);
+    }
   }
 
   #setDatePickers = () => {
     const dateStartContainer = this.element.querySelector('#event-start-time-1');
     const dateEndContainer = this.element.querySelector('#event-end-time-1');
-    this.#datePickerStart = flatpickr(dateStartContainer, {
+    flatpickr(dateStartContainer, {
       onChange: this.#handleDateStartChange,
       dateFormat: 'd/m/y H/i',
       enableTime: true,
       defaultDate: this._data.startDate,
     });
-    this.#datePickerEnd = flatpickr(dateEndContainer, {
+    flatpickr(dateEndContainer, {
       onChange: this.#handleDateEndChange,
       dateFormat: 'd/m/y H/i',
       enableTime: true,
@@ -244,6 +257,7 @@ export default class EditEventView extends SmartView {
   }
 
   restoreHandlers = () => {
+    this.#setDatePickers();
     this.#setInnerHandlers();
     this.setCancelButtonHandler(this._callback.cancelEditEvent);
     this.setSaveButtonHandler(this._callback.saveEvent);
