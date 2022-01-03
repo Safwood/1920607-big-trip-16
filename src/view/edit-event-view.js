@@ -2,6 +2,7 @@ import SmartView from './smart-view';
 import { BLANK_EVENT, eventTypes } from 'utils';
 import { offersTypes } from '../mock/events';
 import flatpickr from 'flatpickr';
+import dayjs from 'dayjs';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
@@ -111,8 +112,6 @@ const createNewEventTemplate = (event, isEditing) => {
 
 
 export default class EditEventView extends SmartView {
-  #datePickerStart = null;
-  #datePickerEnd = null;
   #isEditing = true;
 
   constructor(isEditing, event = BLANK_EVENT) {
@@ -225,23 +224,31 @@ export default class EditEventView extends SmartView {
   }
 
   #handleDateStartChange = (data) => {
-    this.updateData({startDate: data[0]}, true);
+    if(!this._data.finishDate || dayjs(this._data.finishDate).diff(data[0]) > 0) {
+      this.updateData({startDate: data[0]}, true);
+    } else {
+      this.updateData({startDate: this._data.finishDate}, false);
+    }
   }
 
   #handleDateEndChange = (data) => {
-    this.updateData({finishDate: data[0]}, true);
+    if(!this._data.startDate || dayjs(data[0]).diff(this._data.startDate) > 0) {
+      this.updateData({finishDate: data[0]}, true);
+    } else {
+      this.updateData({finishDate: this._data.startDate}, false);
+    }
   }
 
   #setDatePickers = () => {
     const dateStartContainer = this.element.querySelector('#event-start-time-1');
     const dateEndContainer = this.element.querySelector('#event-end-time-1');
-    this.#datePickerStart = flatpickr(dateStartContainer, {
+    flatpickr(dateStartContainer, {
       onChange: this.#handleDateStartChange,
       dateFormat: 'd/m/y H/i',
       enableTime: true,
       defaultDate: this._data.startDate,
     });
-    this.#datePickerEnd = flatpickr(dateEndContainer, {
+    flatpickr(dateEndContainer, {
       onChange: this.#handleDateEndChange,
       dateFormat: 'd/m/y H/i',
       enableTime: true,
@@ -250,6 +257,7 @@ export default class EditEventView extends SmartView {
   }
 
   restoreHandlers = () => {
+    this.#setDatePickers()
     this.#setInnerHandlers();
     this.setCancelButtonHandler(this._callback.cancelEditEvent);
     this.setSaveButtonHandler(this._callback.saveEvent);
