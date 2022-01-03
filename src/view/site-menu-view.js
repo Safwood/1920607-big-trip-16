@@ -1,7 +1,7 @@
 import AbstractView from './abstract-view';
 import { MenuItems } from 'utils';
 
-const createSiteMenuTemplate = (activeItem) => (
+const createSiteMenuTemplate = () => (
   `<nav class="trip-controls__trip-tabs  trip-tabs">
        <a class="trip-tabs__btn trip-tabs__btn--active"  id='${MenuItems.TABLE}' href="#">${MenuItems.TABLE}</a>
        <a class="trip-tabs__btn" id='${MenuItems.STATS}' href="#">${MenuItems.STATS}</a>
@@ -24,7 +24,7 @@ export default class SiteMenuView extends AbstractView {
   #menuClickHandler = (e) => {
     e.preventDefault();
     if(this.#activeMenuItem === e.target.innerText) {
-      return
+      return;
     }
     this._callback.menuClick(e.target.innerText);
     if(e.target.innerText !== MenuItems.NEW_EVENT) {

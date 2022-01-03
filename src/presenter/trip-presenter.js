@@ -54,12 +54,12 @@ export default class TripPresenter {
         this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
         break;
       case UpdateType.MINOR:
-        this.#clearEventList();
-        this.#renderEvents();
+        this.clearEventList();
+        this.renderEvents();
         break;
       case UpdateType.MAJOR:
-        this.#clearEventList();
-        this.#renderEvents();
+        this.clearEventList();
+        this.renderEvents();
         break;
     }
   }
@@ -116,7 +116,7 @@ export default class TripPresenter {
     render(this.#tripEvents, this.#noEventView, RenderPosition.BEFORREEND);
   }
 
-  #renderEvents = () => {
+  renderEvents = () => {
     if(!this.events.length) {
       this.#renderNoEventView();
     }
@@ -130,10 +130,10 @@ export default class TripPresenter {
 
   #renderPageContent = () => {
     this.#renderTripInfoView();
-    this.#renderEvents();
+    this.renderEvents();
   }
 
-  #clearEventList = () => {
+  clearEventList = () => {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
 

@@ -50,5 +50,6 @@ export default class SortingPresenter {
 
   destroy = () => {
     remove(this.#tripSortingView);
+    this.#tripSortingView = null;
   }
 }

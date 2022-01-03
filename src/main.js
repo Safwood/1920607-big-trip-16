@@ -1,4 +1,4 @@
-import {  generateEvent, render, RenderPosition, MenuItems } from 'utils';
+import {  generateEvent, render, RenderPosition, MenuItems, remove } from 'utils';
 import TripPresenter from 'presenter/trip-presenter';
 import FilterPresenter from 'presenter/filter-presenter';
 import SortingPresenter from 'presenter/sorting-presenter';
@@ -28,8 +28,14 @@ const filterPresenter = new FilterPresenter(tripFilterContainer, filterModel, po
 const sortingPresenter = new SortingPresenter(tripEvents, sortingModel, pointsModel);
 const tripPresenter = new TripPresenter(pointsModel, tripMain, tripEvents, filterModel, sortingModel);
 
-const chartView = new ChartView(events);
+let chartView;
 const siteMenuView = new SiteMenuView();
+
+render(menuContainer, siteMenuView, RenderPosition.AFTERBEGIN);
+
+tripPresenter.init(events);
+filterPresenter.init();
+sortingPresenter.init();
 
 const handleNewEventFormClose = () => {
   siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--disabled');
@@ -40,27 +46,36 @@ const handleNewEventFormClose = () => {
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItems.NEW_EVENT:
-      tripPresenter.openAddEventForm(handleNewEventFormClose);
       siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.add('trip-tabs__btn--disabled');
       siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.add('trip-tabs__btn--disabled');
       siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--active');
       siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.remove('trip-tabs__btn--active');
+      tripPresenter.openAddEventForm(handleNewEventFormClose);
+      remove(chartView);
+      tripPresenter.clearEventList();
+      tripPresenter.renderEvents();
+      filterPresenter.init();
+      sortingPresenter.init();
       break;
     case MenuItems.TABLE:
-      console.log(menuItem)
+      siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.add('trip-tabs__btn--active');
+      siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.remove('trip-tabs__btn--active');
+      remove(chartView);
+      tripPresenter.renderEvents();
+      filterPresenter.init();
+      sortingPresenter.init();
       break;
     case MenuItems.STATS:
-      console.log(menuItem)
+      siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--active');
+      siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.add('trip-tabs__btn--active');
+      chartView = new ChartView(events);
+      render(pageContainer, chartView, RenderPosition.BEFORREEND);
+      chartView.init();
+      filterPresenter.destroy();
+      sortingPresenter.destroy();
+      tripPresenter.clearEventList();
       break;
   }
 };
 
 siteMenuView.setMenuClickHandler(handleSiteMenuClick);
-
-render(menuContainer, siteMenuView, RenderPosition.AFTERBEGIN);
-render(pageContainer, chartView, RenderPosition.BEFORREEND);
-
-tripPresenter.init(events);
-filterPresenter.init();
-sortingPresenter.init();
-chartView.init()

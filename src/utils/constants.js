@@ -57,4 +57,4 @@ export const MenuItems = {
   TABLE: 'Table',
   STATS: 'Stats',
   NEW_EVENT: 'New event'
-}
+};

@@ -1,8 +1,7 @@
-import AbstractView from 'view/abstract-view'
-import { getMoneyChat, typeChart, getTimeChat, countEventTypes, countTypesCost, countTypesTotalTime } from 'utils'
+import AbstractView from 'view/abstract-view';
+import { getMoneyChat, typeChart, getTimeChat, countEventTypes, countTypesCost, countTypesTotalTime } from 'utils';
 
-const createChartTemplate = () => {
-  return `<section class="statistics">
+const createChartTemplate = () => `<section class="statistics">
     <h2 class="visually-hidden">Trip statistics</h2>
 
     <div class="statistics__item">
@@ -16,8 +15,7 @@ const createChartTemplate = () => {
     <div class="statistics__item">
       <canvas class="statistics__chart" id="time" width="900"></canvas>
     </div>
-    </section>`
-}
+    </section>`;
 
 export default class ChartView extends AbstractView {
   #events = null;
@@ -29,33 +27,36 @@ export default class ChartView extends AbstractView {
     super();
     this.#events = events;
   }
+
   get template() {
     return createChartTemplate();
   }
 
   init = () => {
     this.#eventsCost = countTypesCost(this.#events);
-    this.#eventCount = countEventTypes(this.#events)
-    this.#eventsTotalTime = countTypesTotalTime(this.#events)
-    this.#setChart()
+    this.#eventCount = countEventTypes(this.#events);
+    this.#eventsTotalTime = countTypesTotalTime(this.#events);
+    this.#setChart();
   }
 
   #getMoneyChart = () => {
     const moneyCtx = this.element.querySelector('#money');
-    getMoneyChat(moneyCtx, this.#eventsCost)
+    getMoneyChat(moneyCtx, this.#eventsCost);
   }
+
   #getTypeChart = () => {
     const typeCtx = this.element.querySelector('#type');
-    typeChart(typeCtx, this.#eventCount)
+    typeChart(typeCtx, this.#eventCount);
   }
+
   #getTimeChart = () => {
     const timeCtx = this.element.querySelector('#time');
-    getTimeChat(timeCtx, this.#eventsTotalTime)
+    getTimeChat(timeCtx, this.#eventsTotalTime);
   }
 
   #setChart = () => {
-    this.#getMoneyChart()
-    this.#getTypeChart()
-    this.#getTimeChart()
+    this.#getMoneyChart();
+    this.#getTypeChart();
+    this.#getTimeChart();
   }
 }

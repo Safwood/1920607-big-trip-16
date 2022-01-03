@@ -52,5 +52,6 @@ export default class FilterPresenter {
 
   destroy = () => {
     remove(this.#tripFilterView);
+    this.#tripFilterView = null;
   }
 }
