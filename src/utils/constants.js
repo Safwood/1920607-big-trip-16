@@ -26,7 +26,6 @@ export const SortingType = {
   EVENT: 'event',
   TIME: 'time',
   PRICE: 'price',
-  OFFERS: 'offers',
 };
 
 export const FilterType = {
