@@ -24,7 +24,7 @@ const createTripSortingTemplate = (activeSortingType) => (
     </div>
 
     <div class="trip-sort__item  trip-sort__item--offer">
-      <input id="sort-offer" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-offer"  ${activeSortingType === SortingType.OFFERS ? 'checked' : ''}>
+      <input id="sort-offer" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-offer" disabled>
       <label class="trip-sort__btn" for="sort-offer" data-sort-type="offers">Offers</label>
     </div>
   </form>`

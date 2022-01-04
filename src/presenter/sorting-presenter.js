@@ -1,20 +1,33 @@
 import TripSortingView from 'view/trip-sorting-view';
-import { render, RenderPosition, remove } from 'utils';
+import { render, RenderPosition, remove, UpdateType, replace } from 'utils';
 
-export default class sortingPresenter {
+export default class SortingPresenter {
   #container = null;
-  #handleSortTypeChange = null;
+  #sortingModel = null;
+  #pointsModel = null;
   #tripSortingView = null;
 
-  constructor(handleSortCallback, sortType) {
-    this.#tripSortingView = new TripSortingView(sortType);
-    this.#handleSortTypeChange = handleSortCallback;
+  constructor(container, sortingModel, pointsModel) {
+    this.#container = container;
+    this.#sortingModel = sortingModel;
+    this.#pointsModel = pointsModel;
+
+    this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#sortingModel.addObserver(this.#handleModelEvent);
   }
 
-  init(container) {
-    this.#container = container;
+  init() {
+    const prevComponent = this.#tripSortingView;
+    this.#tripSortingView = new TripSortingView(this.#sortingModel.sortType);
     this.#setHandlers();
-    this.#renderTripSortingView();
+
+    if(prevComponent === null) {
+      render(this.#container, this.#tripSortingView, RenderPosition.AFTERBEGIN);
+      return;
+    }
+
+    replace(this.#tripSortingView, prevComponent);
+    remove(prevComponent);
   }
 
   #setHandlers = () => {
@@ -23,8 +36,16 @@ export default class sortingPresenter {
     });
   }
 
-  #renderTripSortingView = () => {
-    render(this.#container, this.#tripSortingView, RenderPosition.AFTERBEGIN);
+  #handleModelEvent = () => {
+    this.init();
+  }
+
+  #handleSortTypeChange = (sortType) => {
+    if(this.#sortingModel.sortType === sortType) {
+      return;
+    }
+
+    this.#sortingModel.setSortType(UpdateType.MAJOR, sortType);
   }
 
   destroy = () => {

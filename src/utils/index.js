@@ -9,3 +9,6 @@ export * from './replace';
 export * from './remove';
 export * from './sort';
 export * from './convertDate';
+export * from './abstractObserver';
+export * from './add';
+export * from './filter';
