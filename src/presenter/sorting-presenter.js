@@ -11,15 +11,15 @@ export default class SortingPresenter {
     this.#container = container;
     this.#sortingModel = sortingModel;
     this.#pointsModel = pointsModel;
-
-    this.#pointsModel.addObserver(this.#handleModelEvent);
-    this.#sortingModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
     const prevComponent = this.#tripSortingView;
     this.#tripSortingView = new TripSortingView(this.#sortingModel.sortType);
     this.#setHandlers();
+
+    this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#sortingModel.addObserver(this.#handleModelEvent);
 
     if(prevComponent === null) {
       render(this.#container, this.#tripSortingView, RenderPosition.AFTERBEGIN);
@@ -51,5 +51,8 @@ export default class SortingPresenter {
   destroy = () => {
     remove(this.#tripSortingView);
     this.#tripSortingView = null;
+
+    this.#pointsModel.removeObserver(this.#handleModelEvent);
+    this.#sortingModel.removeObserver(this.#handleModelEvent);
   }
 }
