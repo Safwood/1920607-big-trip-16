@@ -6,7 +6,7 @@ export const remove = (component) => {
   }
 
   if (!(component instanceof AbstractView)) {
-    throw new Error('Can remove only components');
+    return;
   }
 
   component.element.remove();

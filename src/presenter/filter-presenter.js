@@ -11,15 +11,15 @@ export default class FilterPresenter {
     this.#container = container;
     this.#filterModel = filterModel;
     this.#pointsModel = pointsModel;
-
-    this.#pointsModel.addObserver(this.#handleModelEvent);
-    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   init = () => {
     const prevComponent = this.#tripFilterView;
     this.#tripFilterView = new TripFilterView(this.#filterModel.filter);
     this.#addFilterHandler();
+
+    this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
 
     if(prevComponent === null) {
       render(this.#container, this.#tripFilterView, RenderPosition.AFTERBEGIN);
@@ -52,5 +52,10 @@ export default class FilterPresenter {
 
   destroy = () => {
     remove(this.#tripFilterView);
+    this.#tripFilterView = null;
+
+    this.#pointsModel.removeObserver(this.#handleModelEvent);
+    this.#filterModel.removeObserver(this.#handleModelEvent);
+
   }
 }

@@ -53,3 +53,8 @@ export const NoEventTextType = {
   [FilterType.FUTURE]: 'There are no future events',
   [FilterType.PAST]: 'There are no past events',
 };
+export const MenuItems = {
+  TABLE: 'Table',
+  STATS: 'Stats',
+  NEW_EVENT: 'New event'
+};

@@ -7,10 +7,12 @@ export default class NewEventPresenter {
   #container = null;
   #handleAddNewEvent = null;
   #newEventElementView = null;
+  #closeCallback = null;
 
-  constructor(container, handleAddNewEvent) {
+  constructor(container, handleAddNewEvent, closeCallback) {
     this.#container = container;
     this.#handleAddNewEvent = handleAddNewEvent;
+    this.#closeCallback = closeCallback;
   }
 
   init = () => {
@@ -32,11 +34,13 @@ export default class NewEventPresenter {
       this.destroy();
       document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
     }
+    this.#closeCallback();
   };
 
   #handleCancelClick = () => {
     this.destroy();
     document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
+    this.#closeCallback();
   }
 
   #setHandlers = () => {
@@ -47,6 +51,7 @@ export default class NewEventPresenter {
         {...event, id: nanoid(3)},
       );
 
+      this.#closeCallback();
       this.destroy();
     });
 
