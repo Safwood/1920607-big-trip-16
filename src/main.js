@@ -33,7 +33,7 @@ const siteMenuView = new SiteMenuView();
 
 render(menuContainer, siteMenuView, RenderPosition.AFTERBEGIN);
 
-tripPresenter.init(events);
+tripPresenter.init(pointsModel.events);
 filterPresenter.init();
 sortingPresenter.init();
 
@@ -68,7 +68,7 @@ const handleSiteMenuClick = (menuItem) => {
     case MenuItems.STATS:
       siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--active');
       siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.add('trip-tabs__btn--active');
-      chartView = new ChartView(events);
+      chartView = new ChartView(pointsModel.events);
       render(pageContainer, chartView, RenderPosition.BEFORREEND);
       chartView.init();
       filterPresenter.destroy();
