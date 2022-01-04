@@ -12,7 +12,7 @@ export const countTypesCost = (events) => {
   const allTypes = [];
 
   eventTypes.forEach((eventType) => {
-    allTypes.push({[eventType]: events.filter((event) => event.type === eventType).reduce((acc, event) => acc + event.price, 0)});
+    allTypes.push({[eventType]: events.filter((event) => event.type === eventType).reduce((acc, event) => acc + Number(event.price), 0)});
   });
 
   return allTypes.sort((a, b) => Object.values(b)[0] - Object.values(a)[0]);
