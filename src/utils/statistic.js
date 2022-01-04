@@ -12,10 +12,7 @@ export const countTypesCost = (events) => {
   const allTypes = [];
 
   eventTypes.forEach((eventType) => {
-    allTypes.push({[eventType]: events.filter((event) => event.type === eventType).reduce((acc, event) => {
-      const accumulator = acc + event.price;
-      return accumulator;
-    }, 0)});
+    allTypes.push({[eventType]: events.filter((event) => event.type === eventType).reduce((acc, event) => acc + event.price, 0)});
   });
 
   return allTypes.sort((a, b) => Object.values(b)[0] - Object.values(a)[0]);
@@ -25,10 +22,7 @@ export const countTypesTotalTime = (events) => {
   const allTypes = [];
 
   eventTypes.forEach((eventType) => {
-    allTypes.push({[eventType]: events.filter((event) => event.type === eventType).reduce((acc, event) => {
-      const accumulator =  acc + countDurationInMinutes(event.finishDate, event.startDate);
-      return accumulator;
-    }, 0)});
+    allTypes.push({[eventType]: events.filter((event) => event.type === eventType).reduce((acc, event) => acc + countDurationInMinutes(event.finishDate, event.startDate), 0)});
   });
 
   return allTypes.sort((a, b) => Object.values(b)[0] - Object.values(a)[0]);
