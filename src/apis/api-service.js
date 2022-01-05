@@ -51,12 +51,36 @@ export default class ApiService {
     const response = await this.#load({
       url: `/points/${event.id}`,
       method: Method.PUT,
-      body: JSON.stringify(event),
+      body: JSON.stringify(this.#adaptToServer(event)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
     const parsedResponse = await ApiService.parseResponse(response);
 
     return parsedResponse;
+  }
+
+  #adaptToServer = (event) => {
+    const adaptedEvent = {...event,
+      'date_from': event.startDate instanceof Date ? event.startDate.toISOString() : null,
+      'date_to': event.finishDate instanceof Date ? event.finishDate.toISOString() : null,
+      'is_favorite': event.isFavorite,
+      'base_price': event.price,
+      'destination': {
+        name: event.destination,
+        description: event.description,
+        pictures: event.photos
+      },
+      'type': (event.type).toLowerCase()
+    };
+
+    delete adaptedEvent.description;
+    delete adaptedEvent.photos;
+    delete adaptedEvent.startDate;
+    delete adaptedEvent.finishDate;
+    delete adaptedEvent.isFavorite;
+    delete adaptedEvent.price;
+
+    return adaptedEvent;
   }
 }

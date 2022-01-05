@@ -6,10 +6,14 @@ import dayjs from 'dayjs';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-const createOffersTemplate = (offers, type) =>
+const isOfferChecked = (offerType, checkedOffers) => {
+  return checkedOffers.some(offer => offer.title === offerType.title)
+}
+
+const createOffersTemplate = (checkedOffers, type, allOffers) =>
   `<div class="event__available-offers">
-  ${offers.map((offer) => `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" data-offer-id="${offer.id}" id="event-offer-${type}-${offer.id}" type="checkbox" name="event-offer-${type}" ${offer.checked ? 'checked' : ''}>
+  ${allOffers.map((offer) => `<div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden" data-offer-id="${offer.id}" id="event-offer-${type}-${offer.id}" type="checkbox" name="event-offer-${type}" ${isOfferChecked(offer, checkedOffers) ? 'checked' : ''}>
     <label class="event__offer-label"  for="event-offer-${type}-${offer.id}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
@@ -32,15 +36,15 @@ const createAllEventTypesTemplate = () =>
 const createPhotoListTemplate = (photos) => {
   if(photos.length) {
     return `<div class="event__photos-tape">
-    ${photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join('')}
+    ${photos.map((photo) => `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`).join('')}
   </div>`;
   }
   return '';
 };
 
-const createNewEventTemplate = (event, isEditing) => {
+const createNewEventTemplate = (event, isEditing, allOffers) => {
   const photosTemplate = createPhotoListTemplate(event.photos);
-  const offersTemplate = createOffersTemplate(event.offers, event.type);
+  const offersTemplate = createOffersTemplate(event.offers, event.type, allOffers);
   const eventTypesTemplate = createAllEventTypesTemplate();
 
   return `<li class="trip-events__item">
@@ -110,20 +114,21 @@ const createNewEventTemplate = (event, isEditing) => {
     </li>`;
 };
 
-
 export default class EditEventView extends SmartView {
   #isEditing = true;
+  #allOffers = null;
 
   constructor(isEditing, event = BLANK_EVENT) {
     super();
     this.#isEditing = isEditing;
     this._data = {...event};
+    this.#allOffers = offersTypes[0].offers
     this.#setDatePickers();
     this.#setInnerHandlers();
   }
 
   get template() {
-    return createNewEventTemplate(this._data, this.#isEditing);
+    return createNewEventTemplate(this._data, this.#isEditing, this.#allOffers);
   }
 
   setSaveButtonHandler = (callback) => {
@@ -178,13 +183,17 @@ export default class EditEventView extends SmartView {
     if(!e.currentTarget.dataset.offerId) {
       return;
     }
-
-    const newOffers = [...this._data.offers].map((offer) => {
-      if(offer.id === Number(e.currentTarget.dataset.offerId)) {
-        offer.checked = !offer.checked;
-      }
-      return offer;
-    });
+    let newOffers;
+    if(this._data.offers.some(offer => offer.id === Number(e.currentTarget.dataset.offerId))) {
+      newOffers = [...this._data.offers].filter((offer) => {
+        if(offer.id !== Number(e.currentTarget.dataset.offerId)) {
+          return offer
+        }
+      });
+    } else {
+      newOffers = [...this._data.offers, this.#allOffers.find(offer => offer.id === Number(e.currentTarget.dataset.offerId))]
+    }
+    
     this.updateData({offers: newOffers}, false);
   }
 

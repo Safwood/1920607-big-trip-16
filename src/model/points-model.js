@@ -10,7 +10,8 @@ export default class PointsModel extends AbstractObserver {
     this.#apiService = apiService;
 
     this.#apiService.events.then((events) => {
-      console.log(events);
+      const result = events.map(this.#adaptToClient);
+      console.log(result);
     });
   }
 
@@ -20,6 +21,26 @@ export default class PointsModel extends AbstractObserver {
 
   set events(events) {
     this.#events = [...events];
+  }
+
+  #adaptToClient = (event) => {
+    const adaptedEvent = {...event,
+      startDate: event['date_from'] !== null ? new Date(event['date_from']) : event['date_from'], // На клиенте дата хранится как экземпляр Date
+      finishDate: event['date_to'] !== null ? new Date(event['date_to']) : event['date_to'], // На клиенте дата хранится как экземпляр Date
+      isFavorite: event['is_favorite'],
+      price: event['base_price'],
+      type: (event.type)[0].toUpperCase() + (event.type).substring(1),
+      description: event.destination.description,
+      photos: event.destination.pictures,
+      destination: event.destination.name
+    };
+
+    delete adaptedEvent['date_from'];
+    delete adaptedEvent['date_to'];
+    delete adaptedEvent['is_favorite'];
+    delete adaptedEvent['base_price'];
+
+    return adaptedEvent;
   }
 
   changeEvent = (updateType, updatedEvent) => {

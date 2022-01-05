@@ -47,7 +47,7 @@ export const getRandomPhotos = () => {
   const photos = [];
   const randomCount = getRandomIntenger(0, 5);
   for (let i = 0; i < randomCount; i++) {
-    photos.push(`http://picsum.photos/248/152?r=${getRandomIntenger(0, 1000)}`);
+    photos.push({src: `http://picsum.photos/248/152?r=${getRandomIntenger(0, 1000)}`, description: ''});
   }
   return photos;
 };
