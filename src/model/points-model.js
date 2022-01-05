@@ -1,5 +1,5 @@
 import AbstractObserver from 'utils/abstractObserver';
-import { updateItem, removeElement, addItem } from 'utils';
+import { updateItem, removeElement, addItem, UpdateType } from 'utils';
 
 export default class PointsModel extends AbstractObserver {
   #events = null;
@@ -8,19 +8,21 @@ export default class PointsModel extends AbstractObserver {
   constructor(apiService) {
     super();
     this.#apiService = apiService;
+  }
 
-    this.#apiService.events.then((events) => {
-      const result = events.map(this.#adaptToClient);
-      console.log(result);
-    });
+  init = async () => {
+    try {
+      const events = await this.#apiService.events;
+      this.#events = events.map(this.#adaptToClient);
+    } catch {
+      this.#events = [];
+    }
+
+    this._notify(UpdateType.INIT)
   }
 
   get events() {
     return this.#events;
-  }
-
-  set events(events) {
-    this.#events = [...events];
   }
 
   #adaptToClient = (event) => {

@@ -33,12 +33,17 @@ export default class TripPresenter {
 
   get events() {
     this.#filterType = this.#filterModel.filter;
+    if(!this.#pointsModel.events) {
+      return
+    }
     const filteredEvents = filter[this.#filterType](this.#pointsModel.events);
     return sort(filteredEvents, this.#sortingModel.sortType);
   }
 
   init = () => {
-    this.#totalPrice = countTotalSum(this.events);
+    if(this.events) {
+      this.#totalPrice = countTotalSum(this.events);
+    }
     this.#tripInfoView = new TripInfoView(this.#totalPrice);
     this.#renderEventListView();
     this.#renderPageContent();
@@ -59,6 +64,9 @@ export default class TripPresenter {
         break;
       case UpdateType.MAJOR:
         this.clearEventList();
+        this.renderEvents();
+        break;
+      case UpdateType.INIT:
         this.renderEvents();
         break;
     }
@@ -117,8 +125,13 @@ export default class TripPresenter {
   }
 
   renderEvents = () => {
-    if(!this.events.length) {
+    if(this.#noEventView) {
+      remove(this.#noEventView);
+    }
+
+    if(!this.events || !this.events.length) {
       this.#renderNoEventView();
+      return
     }
 
     for(const event of this.events) {

@@ -19,7 +19,7 @@ export default class TripInfoView extends AbstractView {
 
   constructor(totalPrice) {
     super();
-    this.#totalPrice = totalPrice;
+    this.#totalPrice = totalPrice || 0;
   }
 
   get template() {

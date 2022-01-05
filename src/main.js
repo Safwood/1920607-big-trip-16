@@ -1,4 +1,4 @@
-import {  generateEvent, render, RenderPosition, MenuItems, remove } from 'utils';
+import { render, RenderPosition, MenuItems, remove } from 'utils';
 import TripPresenter from 'presenter/trip-presenter';
 import FilterPresenter from 'presenter/filter-presenter';
 import SortingPresenter from 'presenter/sorting-presenter';
@@ -12,10 +12,6 @@ import ApiService from 'apis/api-service.js';
 const AUTHORIZATION = 'Basic k651vb51gf54fon';
 const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
 
-const EVENT_COUNT = 2;
-
-const events = Array.from({length: EVENT_COUNT}, generateEvent);
-
 const menuContainer = document.querySelector('.trip-controls__navigation');
 const pageContainer = document.querySelector('.page-body__page-main').firstElementChild;
 const tripFilterContainer = document.querySelector('.trip-controls__filters');
@@ -23,8 +19,6 @@ const tripMain = document.querySelector('.trip-main');
 const tripEvents = document.querySelector('.trip-events');
 
 const pointsModel = new PointsModel(new ApiService(END_POINT, AUTHORIZATION));
-pointsModel.events = events;
-
 const filterModel = new FilterModel();
 const sortingModel = new SortingModel();
 
@@ -36,10 +30,6 @@ let chartView;
 const siteMenuView = new SiteMenuView();
 
 render(menuContainer, siteMenuView, RenderPosition.AFTERBEGIN);
-
-tripPresenter.init(pointsModel.events);
-filterPresenter.init();
-sortingPresenter.init();
 
 const handleNewEventFormClose = () => {
   siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--disabled');
@@ -83,3 +73,8 @@ const handleSiteMenuClick = (menuItem) => {
 };
 
 siteMenuView.setMenuClickHandler(handleSiteMenuClick);
+
+tripPresenter.init();
+filterPresenter.init();
+sortingPresenter.init();
+pointsModel.init()
