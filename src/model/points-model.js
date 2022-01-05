@@ -3,6 +3,16 @@ import { updateItem, removeElement, addItem } from 'utils';
 
 export default class PointsModel extends AbstractObserver {
   #events = null;
+  #apiService = null;
+
+  constructor(apiService) {
+    super();
+    this.#apiService = apiService;
+
+    this.#apiService.events.then((events) => {
+      console.log(events);
+    });
+  }
 
   get events() {
     return this.#events;

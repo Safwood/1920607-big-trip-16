@@ -7,6 +7,10 @@ import FilterModel from 'model/filter-model';
 import SortingModel from 'model/sorting-model';
 import ChartView from 'view/chart-view';
 import SiteMenuView from 'view/site-menu-view';
+import ApiService from 'apis/api-service.js';
+
+const AUTHORIZATION = 'Basic k651vb51gf54fon';
+const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
 
 const EVENT_COUNT = 2;
 
@@ -18,7 +22,7 @@ const tripFilterContainer = document.querySelector('.trip-controls__filters');
 const tripMain = document.querySelector('.trip-main');
 const tripEvents = document.querySelector('.trip-events');
 
-const pointsModel = new PointsModel();
+const pointsModel = new PointsModel(new ApiService(END_POINT, AUTHORIZATION));
 pointsModel.events = events;
 
 const filterModel = new FilterModel();

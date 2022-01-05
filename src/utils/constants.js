@@ -58,3 +58,8 @@ export const MenuItems = {
   STATS: 'Stats',
   NEW_EVENT: 'New event'
 };
+
+export const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+};
