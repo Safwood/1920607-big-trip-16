@@ -4,6 +4,7 @@ import NoEventView from 'view/no-event-view';
 import { countTotalSum, render, RenderPosition, sort, SortingType, UserAction, UpdateType, filter, remove, FilterType } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
 import NewEventPresenter from 'presenter/new-event-presenter';
+import LoadingView from 'view/loading-view.js';
 
 export default class TripPresenter {
   #pointsModel = null;
@@ -14,11 +15,12 @@ export default class TripPresenter {
   #tripEvents = null;
   #tripInfoView = null;
   #tripEventsList = null;
+  #noEventView = null;
   #filterType = FilterType.EVERYTHING;
   #eventPresenters = new Map();
-
+  #loadingView = new LoadingView();
   #eventListView = new EventListView();
-  #noEventView = null;
+  #isLoading = true;
 
   constructor(pointsModel, tripMain, tripEvents, filterModel, sortingModel) {
     this.#pointsModel = pointsModel;
@@ -67,6 +69,8 @@ export default class TripPresenter {
         this.renderEvents();
         break;
       case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingView);
         this.renderEvents();
         break;
     }
@@ -115,6 +119,10 @@ export default class TripPresenter {
     newEventPresenter.init();
   }
 
+  #renderLoading = () => {
+    render(this.#tripEvents, this.#loadingView, RenderPosition.AFTERBEGIN);
+  }
+
   #renderTripInfoView = () => {
     render(this.#tripMain, this.#tripInfoView, RenderPosition.AFTERBEGIN);
   }
@@ -129,6 +137,11 @@ export default class TripPresenter {
       remove(this.#noEventView);
     }
 
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+    
     if(!this.events || !this.events.length) {
       this.#renderNoEventView();
       return
@@ -149,6 +162,10 @@ export default class TripPresenter {
   clearEventList = () => {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
+
+    if (this.#loadingView) {
+      remove(this.#loadingView);
+    }
 
     if (this.#noEventView) {
       remove(this.#noEventView);
