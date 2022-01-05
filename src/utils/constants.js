@@ -63,4 +63,5 @@ export const MenuItems = {
 export const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
 };

@@ -47,9 +47,20 @@ export default class ApiService {
     throw err;
   }
 
+  loadAllPoint = async () => {
+    const response = await this.#load({
+      url: `destinations`,
+      method: Method.GET,
+    });
+
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
+  }
+
   updateEvent = async (event) => {
     const response = await this.#load({
-      url: `/points/${event.id}`,
+      url: `points/${event.id}`,
       method: Method.PUT,
       body: JSON.stringify(this.#adaptToServer(event)),
       headers: new Headers({'Content-Type': 'application/json'}),
@@ -65,7 +76,7 @@ export default class ApiService {
       'date_from': event.startDate instanceof Date ? event.startDate.toISOString() : null,
       'date_to': event.finishDate instanceof Date ? event.finishDate.toISOString() : null,
       'is_favorite': event.isFavorite,
-      'base_price': event.price,
+      'base_price': Number(event.price),
       'destination': {
         name: event.destination,
         description: event.description,

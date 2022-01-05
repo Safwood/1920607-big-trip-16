@@ -4,6 +4,7 @@ import { updateItem, removeElement, addItem, UpdateType } from 'utils';
 export default class PointsModel extends AbstractObserver {
   #events = null;
   #apiService = null;
+  #allPossiblePoints = null;
 
   constructor(apiService) {
     super();
@@ -14,8 +15,10 @@ export default class PointsModel extends AbstractObserver {
     try {
       const events = await this.#apiService.events;
       this.#events = events.map(this.#adaptToClient);
+      this.#allPossiblePoints = await this.#apiService.loadAllPoint()
     } catch {
       this.#events = [];
+      this.#allPossiblePoints = [];
     }
 
     this._notify(UpdateType.INIT)
@@ -45,9 +48,17 @@ export default class PointsModel extends AbstractObserver {
     return adaptedEvent;
   }
 
-  changeEvent = (updateType, updatedEvent) => {
-    this.#events = updateItem(this.#events, updatedEvent);
-    this._notify(updateType, updatedEvent);
+  changeEvent = async (updateType, update) => {
+    try {
+      const response = await this.#apiService.updateEvent(update);
+      const updatedEvent = this.#adaptToClient(response);
+      
+      this.#events = updateItem(this.#events, updatedEvent);
+      this._notify(updateType, updatedEvent);
+    } catch(e) {
+      console.log(e)
+      throw new Error('Can\'t update event');
+    }
   }
 
   addEvent = (updateType, addedEvent) => {
