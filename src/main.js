@@ -29,8 +29,6 @@ const tripPresenter = new TripPresenter(pointsModel, tripMain, tripEvents, filte
 let chartView;
 const siteMenuView = new SiteMenuView();
 
-render(menuContainer, siteMenuView, RenderPosition.AFTERBEGIN);
-
 const handleNewEventFormClose = () => {
   siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--disabled');
   siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.remove('trip-tabs__btn--disabled');
@@ -72,9 +70,10 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-siteMenuView.setMenuClickHandler(handleSiteMenuClick);
-
 tripPresenter.init();
-filterPresenter.init();
-sortingPresenter.init();
-pointsModel.init()
+pointsModel.init().finally(() => {
+  filterPresenter.init();
+  sortingPresenter.init();
+  render(menuContainer, siteMenuView, RenderPosition.AFTERBEGIN);
+  siteMenuView.setMenuClickHandler(handleSiteMenuClick);
+});
