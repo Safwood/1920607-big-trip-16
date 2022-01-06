@@ -58,6 +58,17 @@ export default class ApiService {
     return parsedResponse;
   }
 
+  loadAllOffers = async () => {
+    const response = await this.#load({
+      url: `offers`,
+      method: Method.GET,
+    });
+
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
+  }
+
   updateEvent = async (event) => {
     const response = await this.#load({
       url: `points/${event.id}`,

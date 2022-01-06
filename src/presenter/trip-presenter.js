@@ -42,6 +42,23 @@ export default class TripPresenter {
     return sort(filteredEvents, this.#sortingModel.sortType);
   }
 
+  get allOffers() {
+    const offers = this.#pointsModel.allOffers;
+    if(!offers) {
+      return []
+    }
+    return offers
+  }
+
+  get allDestinations() {
+    const destinations = this.#pointsModel.allDestinations;
+    if(!destinations) {
+      return []
+    }
+
+    return destinations
+  }
+
   init = () => {
     if(this.events) {
       this.#totalPrice = countTotalSum(this.events);
@@ -115,7 +132,7 @@ export default class TripPresenter {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
     this.#sortingModel.setSortType(UpdateType.MINOR, SortingType.DAY);
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    const newEventPresenter = new NewEventPresenter(this.#tripEventsList, this.#handleEventAdd, callback);
+    const newEventPresenter = new NewEventPresenter(this.allOffers, this.allDestinations, this.#tripEventsList, this.#handleEventAdd, callback);
     newEventPresenter.init();
   }
 
@@ -148,7 +165,7 @@ export default class TripPresenter {
     }
 
     for(const event of this.events) {
-      const eventPresenter = new EventPresenter(this.#tripEventsList, this.#handleEventChange, this.#handleModeChange, this.#handleEventDelete);
+      const eventPresenter = new EventPresenter(this.allOffers, this.allDestinations, this.#tripEventsList, this.#handleEventChange, this.#handleModeChange, this.#handleEventDelete);
       eventPresenter.init(event);
       this.#eventPresenters.set(event.id, eventPresenter);
     }

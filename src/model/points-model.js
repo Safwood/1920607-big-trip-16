@@ -5,6 +5,7 @@ export default class PointsModel extends AbstractObserver {
   #events = null;
   #apiService = null;
   #allPossiblePoints = null;
+  #allPossibleOffers = null;
 
   constructor(apiService) {
     super();
@@ -16,9 +17,11 @@ export default class PointsModel extends AbstractObserver {
       const events = await this.#apiService.events;
       this.#events = events.map(this.#adaptToClient);
       this.#allPossiblePoints = await this.#apiService.loadAllPoint()
+      this.#allPossibleOffers = await this.#apiService.loadAllOffers()
     } catch {
       this.#events = [];
       this.#allPossiblePoints = [];
+      this.#allPossibleOffers = [];
     }
 
     this._notify(UpdateType.INIT)
@@ -26,6 +29,14 @@ export default class PointsModel extends AbstractObserver {
 
   get events() {
     return this.#events;
+  }
+
+  get allDestinations() {
+    return this.#allPossiblePoints;
+  }
+
+  get allOffers() {
+    return this.#allPossibleOffers;
   }
 
   #adaptToClient = (event) => {
