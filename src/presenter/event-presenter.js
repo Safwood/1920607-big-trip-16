@@ -62,12 +62,6 @@ export default class EventPresenter {
     this.#mode = Mode.DEFAULT;
   };
 
-  #removeCard = () => {
-    const parent = this.#newEventElementView.element.parentElement;
-    parent.removeChild(this.#newEventElementView.element);
-    this.#mode = Mode.DEFAULT;
-  };
-
   #handleFavoriteClick = () => {
     this.#handleChange(
       UserAction.UPDATE_EVENT,
@@ -108,10 +102,9 @@ export default class EventPresenter {
 
     this.#newEventElementView.setDeleteButtonHandler((event) => {
       this.#deleteEvent(
-        UserAction.REMOVE_EVENT,
+        UserAction.DELETE_EVENT,
         UpdateType.MINOR,
         event);
-      this.#removeCard();
     });
 
     this.#newEventElementView.setCancelButtonHandler(this.#replaceFormToCard);
