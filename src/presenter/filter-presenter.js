@@ -1,5 +1,5 @@
 import TripFilterView from 'view/trip-filter-view';
-import { render, RenderPosition, remove, UpdateType, replace } from 'utils';
+import { render, RenderPosition, remove, UpdateType, replace, FilterType } from 'utils';
 
 export default class FilterPresenter {
   #container = null;
@@ -43,7 +43,8 @@ export default class FilterPresenter {
   }
 
   #handleFilterChange = (filterType) => {
-    if(this.#filterModel.filter === filterType) {
+    const isValidFilterType = filterType === FilterType.EVERYTHING || filterType === FilterType.FUTURE || filterType === FilterType.PAST;
+    if(this.#filterModel.filter === filterType || !isValidFilterType) {
       return;
     }
 

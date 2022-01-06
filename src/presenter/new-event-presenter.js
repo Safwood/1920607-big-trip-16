@@ -8,11 +8,15 @@ export default class NewEventPresenter {
   #handleAddNewEvent = null;
   #newEventElementView = null;
   #closeCallback = null;
+  #allOffers = null;
+  #allDestinations = null;
 
-  constructor(container, handleAddNewEvent, closeCallback) {
+  constructor(allOffers, allDestinations, container, handleAddNewEvent, closeCallback) {
     this.#container = container;
     this.#handleAddNewEvent = handleAddNewEvent;
     this.#closeCallback = closeCallback;
+    this.#allOffers = allOffers;
+    this.#allDestinations = allDestinations;
   }
 
   init = () => {
@@ -20,7 +24,7 @@ export default class NewEventPresenter {
       return;
     }
 
-    this.#newEventElementView = new EditEventView(false);
+    this.#newEventElementView = new EditEventView(this.#allOffers, this.#allDestinations, false);
 
     render(this.#container, this.#newEventElementView, RenderPosition.AFTERBEGIN);
 
