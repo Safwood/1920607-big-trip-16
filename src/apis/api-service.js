@@ -49,7 +49,7 @@ export default class ApiService {
 
   loadAllPoint = async () => {
     const response = await this.#load({
-      url: `destinations`,
+      url: 'destinations',
       method: Method.GET,
     });
 
@@ -60,7 +60,7 @@ export default class ApiService {
 
   loadAllOffers = async () => {
     const response = await this.#load({
-      url: `offers`,
+      url: 'offers',
       method: Method.GET,
     });
 

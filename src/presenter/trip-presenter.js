@@ -35,32 +35,34 @@ export default class TripPresenter {
 
   get events() {
     this.#filterType = this.#filterModel.filter;
-    if(!this.#pointsModel.events) {
-      return
+    const events = this.#pointsModel.events;
+    if(!events) {
+      return [];
     }
-    const filteredEvents = filter[this.#filterType](this.#pointsModel.events);
-    return sort(filteredEvents, this.#sortingModel.sortType);
+    const filteredEvents = filter[this.#filterType](events);
+    const sortedEvents = sort(filteredEvents, this.#sortingModel.sortType);
+    return sortedEvents;
   }
 
   get allOffers() {
     const offers = this.#pointsModel.allOffers;
     if(!offers) {
-      return []
+      return [];
     }
-    return offers
+    return offers;
   }
 
   get allDestinations() {
     const destinations = this.#pointsModel.allDestinations;
     if(!destinations) {
-      return []
+      return [];
     }
 
-    return destinations
+    return destinations;
   }
 
   init = () => {
-    if(this.events) {
+    if(this.events.length) {
       this.#totalPrice = countTotalSum(this.events);
     }
     this.#tripInfoView = new TripInfoView(this.#totalPrice);
@@ -158,10 +160,10 @@ export default class TripPresenter {
       this.#renderLoading();
       return;
     }
-    
+
     if(!this.events || !this.events.length) {
       this.#renderNoEventView();
-      return
+      return;
     }
 
     for(const event of this.events) {

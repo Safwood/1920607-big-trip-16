@@ -5,12 +5,10 @@ import dayjs from 'dayjs';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-const isOfferChecked = (offerType, checkedOffers) => {
-  return checkedOffers.some(offer => offer.title === offerType.title)
-}
+const isOfferChecked = (offerType, checkedOffers) => checkedOffers.some((offer) => offer.title === offerType.title);
 
 const createOffersTemplate = (checkedOffers, type, currentOffers) => `<div class="event__available-offers">
-  ${currentOffers.map((offer) => 
+  ${currentOffers.map((offer) =>
     `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" data-offer-id="${offer.id}" id="event-offer-${type}-${offer.id}" type="checkbox" name="event-offer-${type}" ${isOfferChecked(offer, checkedOffers) ? 'checked' : ''}>
       <label class="event__offer-label"  for="event-offer-${type}-${offer.id}">
@@ -19,18 +17,18 @@ const createOffersTemplate = (checkedOffers, type, currentOffers) => `<div class
         <span class="event__offer-price">${offer.price}</span>
       </label>
     </div>`).join('')}
-</div>`
+</div>`;
 
-const createAllDestinationsTemplate = (destinations, currentDestination, eventType) => 
-`<div class="event__field-group  event__field-group--destination">
+const createAllDestinationsTemplate = (destinations, currentDestination, eventType) =>
+  `<div class="event__field-group  event__field-group--destination">
   <label class="event__label  event__type-output" for="event-destination-${currentDestination}">
     ${eventType}
   </label>
   <select class="event__input  event__input--destination" id="event-destination-${currentDestination}" name="event-destination" value="${currentDestination}">
   <option value=''></option>
-    ${destinations.map(destination => `<option value='${destination.name}' ${destination.name === currentDestination ? 'selected' : ''}>${destination.name}</option>`).join('')}
+    ${destinations.map((destination) => `<option value='${destination.name}' ${destination.name === currentDestination ? 'selected' : ''}>${destination.name}</option>`).join('')}
   </select>
-</div>`
+</div>`;
 
 const createAllEventTypesTemplate = () =>
   `<div class="event__type-list">
@@ -103,7 +101,7 @@ const createNewEventTemplate = (event, isEditing, allDestinations, currentOffers
     : ''}
 
     ${currentPointDescription.description ?
-      `<section class="event__section  event__section--destination">
+    `<section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${currentPointDescription.description}</p>
         <div class="event__photos-container">
@@ -128,9 +126,9 @@ export default class EditEventView extends SmartView {
     this.#isEditing = isEditing;
     this._data = {...event};
     this.#allOffers = allOffers;
-    this.#currentOffers = ((allOffers).filter(offer => offer.type === (this._data.type).toLowerCase()))[0].offers;
+    this.#currentOffers = ((allOffers).filter((offer) => offer.type === (this._data.type).toLowerCase()))[0].offers;
     this.#allDestinations = allDestinations;
-    this.#currentPointDescription = allDestinations.filter(destination => destination.name === this._data.destination)[0];
+    this.#currentPointDescription = allDestinations.filter((destination) => destination.name === this._data.destination)[0];
     this.#setDatePickers();
     this.#setInnerHandlers();
   }
@@ -180,7 +178,7 @@ export default class EditEventView extends SmartView {
     if(!e.target.innerText) {
       return;
     }
-    this.#currentOffers = ((this.#allOffers).filter(offer => offer.type === (e.target.innerText).toLowerCase()))[0].offers;
+    this.#currentOffers = ((this.#allOffers).filter((offer) => offer.type === (e.target.innerText).toLowerCase()))[0].offers;
 
     this.updateData({type: e.target.innerText, offers: []}, false);
   }
@@ -191,21 +189,21 @@ export default class EditEventView extends SmartView {
       return;
     }
     let newOffers;
-    if(this._data.offers.some(offer => offer.id === Number(e.currentTarget.dataset.offerId))) {
+    if(this._data.offers.some((offer) => offer.id === Number(e.currentTarget.dataset.offerId))) {
       newOffers = [...this._data.offers].filter((offer) => {
         if(offer.id !== Number(e.currentTarget.dataset.offerId)) {
-          return offer
+          return offer;
         }
       });
     } else {
-      const newOffer = this.#currentOffers.find(offer => offer.id === Number(e.currentTarget.dataset.offerId))
+      const newOffer = this.#currentOffers.find((offer) => offer.id === Number(e.currentTarget.dataset.offerId));
       if(!newOffer) {
         newOffers = [...this._data.offers];
       } else {
         newOffers = [...this._data.offers, newOffer];
       }
     }
-    
+
     this.updateData({offers: newOffers}, false);
   }
 
@@ -226,9 +224,7 @@ export default class EditEventView extends SmartView {
       return;
     }
 
-    this.#currentPointDescription = (this.#allDestinations.filter(destination => {
-      return destination.name === e.target.value
-    }))[0];
+    this.#currentPointDescription = (this.#allDestinations.filter((destination) => destination.name === e.target.value))[0];
 
     this.updateData({destination: e.target.value, description: this.#currentPointDescription.description, photos: this.#currentPointDescription.pictures}, false);
   }
