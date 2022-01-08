@@ -166,11 +166,13 @@ export default class EditEventView extends SmartView {
       .addEventListener('input', this.#eventPriceChangeHandler);
     this.element.querySelector('.event__input--destination')
       .addEventListener('input', this.#eventDestinationChangeHandler);
-    if(this._data.offers.length) {
-      this.element.querySelectorAll('.event__offer-checkbox')
-        .forEach((element) => element
-          .addEventListener('click', this.#eventOffersToggleHandler));
+    const offerInputs = this.element.querySelectorAll('.event__offer-checkbox');
+
+    if(!offerInputs) {
+      return
     }
+
+    offerInputs.forEach((element) => element.addEventListener('click', this.#eventOffersToggleHandler));
   }
 
   #eventTypeChangeHandler = (e) => {
