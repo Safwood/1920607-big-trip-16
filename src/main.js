@@ -21,8 +21,9 @@ const tripEvents = document.querySelector('.trip-events');
 const pointsModel = new PointsModel(new ApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
 const sortingModel = new SortingModel();
+const siteMenuView = new SiteMenuView();
 
-const handleNewEventFormClose = (e) => {
+const handleNewEventFormClose = () => {
   siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--disabled');
   siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.remove('trip-tabs__btn--disabled');
   siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.add('trip-tabs__btn--active');
@@ -33,8 +34,6 @@ const sortingPresenter = new SortingPresenter(tripEvents, sortingModel, pointsMo
 const tripPresenter = new TripPresenter(pointsModel, tripMain, tripEvents, filterModel, sortingModel, handleNewEventFormClose);
 
 let chartView;
-const siteMenuView = new SiteMenuView();
-
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {

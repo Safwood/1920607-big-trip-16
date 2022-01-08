@@ -141,9 +141,9 @@ export default class EditEventView extends SmartView {
   }
 
   static parseEventToData = (event) => ({...event,
-      isDisabled: false,
-      isSaving: false,
-      isDeleting: false,
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false,
   });
 
   static parseDataToEvent = (data) => {
@@ -188,7 +188,7 @@ export default class EditEventView extends SmartView {
     const offerInputs = this.element.querySelectorAll('.event__offer-checkbox');
 
     if(!offerInputs) {
-      return
+      return;
     }
 
     offerInputs.forEach((element) => element.addEventListener('click', this.#eventOffersToggleHandler));

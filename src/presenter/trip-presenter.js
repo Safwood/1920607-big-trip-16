@@ -117,7 +117,7 @@ export default class TripPresenter {
         } catch(err) {
           this.#newEventPresenter.setAborting();
         }
-        
+
         break;
       case UserAction.DELETE_EVENT:
         this.#eventPresenters.get(update.id).setViewState(State.DELETING);

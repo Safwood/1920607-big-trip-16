@@ -73,7 +73,7 @@ export default class PointsModel extends AbstractObserver {
 
   addEvent = async (updateType, addedEvent) => {
     try {
-      const response = await this.#apiService.addEvent(addedEvent)
+      const response = await this.#apiService.addEvent(addedEvent);
       const udaptedEvent = this.#adaptToClient(response);
       this.#events = addItem(this.#events, udaptedEvent);
       this._notify(updateType, udaptedEvent);
@@ -85,7 +85,7 @@ export default class PointsModel extends AbstractObserver {
 
   removeEvent = async (updateType, removedEvent) => {
     try {
-      await this.#apiService.deleteEvent(removedEvent)
+      await this.#apiService.deleteEvent(removedEvent);
       this.#events = removeElement(this.#events, removedEvent);
       this._notify(updateType, removedEvent);
 
