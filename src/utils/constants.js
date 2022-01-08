@@ -66,3 +66,8 @@ export const Method = {
   POST: 'POST',
   DELETE: 'DELETE',
 };
+
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+};
