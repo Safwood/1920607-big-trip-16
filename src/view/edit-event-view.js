@@ -50,11 +50,13 @@ const createPhotoListTemplate = (photos = []) => {
   return '';
 };
 
-const createNewEventTemplate = (event, isSaving, isDeleting, isDisabled, isEditing, allDestinations, currentOffers = [], currentPointDescription = {}) => {
-  const photosTemplate = createPhotoListTemplate(currentPointDescription.pictures);
-  const offersTemplate = createOffersTemplate(event.offers, event.type, currentOffers, isDisabled);
+const createNewEventTemplate = (event, isEditing, allDestinations, currentOffers = [], currentPointDescription = {}) => {
+  const { isDisabled, type, offers, price, isSaving, isDeleting } = event;
+  const { pictures, name, description } = currentPointDescription;
+  const photosTemplate = createPhotoListTemplate(pictures);
+  const offersTemplate = createOffersTemplate(offers, type, currentOffers, isDisabled);
   const eventTypesTemplate = createAllEventTypesTemplate();
-  const destinationsTemplate = createAllDestinationsTemplate(allDestinations, currentPointDescription.name, event.type, isDisabled);
+  const destinationsTemplate = createAllDestinationsTemplate(allDestinations, name, type, isDisabled);
   const deleteButton = isDeleting ? 'Deleting...' : 'Delete';
 
   return `<li class="trip-events__item">
@@ -63,7 +65,7 @@ const createNewEventTemplate = (event, isSaving, isDeleting, isDisabled, isEditi
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/${event.type}.png" alt="Event type icon">
+                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
                     </label>
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
                     ${eventTypesTemplate}
@@ -84,7 +86,7 @@ const createNewEventTemplate = (event, isSaving, isDeleting, isDisabled, isEditi
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" name="event-price" value="${event.price}"  ${isDisabled ? 'disabled' : ''}>
+                    <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" name="event-price" value="${price}"  ${isDisabled ? 'disabled' : ''}>
                 </div>
 
                 <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
@@ -101,10 +103,10 @@ const createNewEventTemplate = (event, isSaving, isDeleting, isDisabled, isEditi
                 </section>`
     : ''}
 
-    ${currentPointDescription.description ?
+    ${description ?
     `<section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${currentPointDescription.description}</p>
+        <p class="event__destination-description">${description}</p>
         <div class="event__photos-container">
         ${photosTemplate}
         </div>
@@ -117,9 +119,6 @@ const createNewEventTemplate = (event, isSaving, isDeleting, isDisabled, isEditi
 
 export default class EditEventView extends SmartView {
   #isEditing = true;
-  #isSaving = false;
-  #isDeleting = false;
-  #isDisabled = false;
   #allOffers = null;
   #currentOffers = null;
   #allDestinations = null;
@@ -128,10 +127,7 @@ export default class EditEventView extends SmartView {
   constructor(allOffers, allDestinations, isEditing, event = BLANK_EVENT) {
     super();
     this.#isEditing = isEditing;
-    this.#isSaving = false;
-    this.#isDeleting = false;
-    this.#isDisabled = false;
-    this._data = {...event};
+    this._data = EditEventView.parseEventToData(event);
     this.#allOffers = allOffers;
     this.#currentOffers = ((allOffers).filter((offer) => offer.type === (this._data.type).toLowerCase()))[0].offers;
     this.#allDestinations = allDestinations;
@@ -141,7 +137,23 @@ export default class EditEventView extends SmartView {
   }
 
   get template() {
-    return createNewEventTemplate(this._data, this.#isSaving, this.#isDeleting, this.#isDisabled, this.#isEditing, this.#allDestinations, this.#currentOffers, this.#currentPointDescription);
+    return createNewEventTemplate(this._data, this.#isEditing, this.#allDestinations, this.#currentOffers, this.#currentPointDescription);
+  }
+
+  static parseEventToData = (event) => ({...event,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+  });
+
+  static parseDataToEvent = (data) => {
+    const event = {...data};
+
+    delete event.isDisabled;
+    delete event.isSaving;
+    delete event.isDeleting;
+
+    return event;
   }
 
   setSaveButtonHandler = (callback) => {
@@ -240,7 +252,7 @@ export default class EditEventView extends SmartView {
 
   #handleSaveButtonClick = (e) => {
     e.preventDefault();
-    this._callback.saveEvent(this._data);
+    this._callback.saveEvent(EditEventView.parseDataToEvent(this._data));
   }
 
   #handleCancelButtonClick = (e) => {
@@ -250,7 +262,7 @@ export default class EditEventView extends SmartView {
 
   #handleDeleteButtonClick = (e) => {
     e.preventDefault();
-    this._callback.deleteEvent(this._data);
+    this._callback.deleteEvent(EditEventView.parseDataToEvent(this._data));
   }
 
   #handleDateStartChange = (data) => {
