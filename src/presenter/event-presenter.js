@@ -5,8 +5,8 @@ import { render, RenderPosition, replace, Mode, remove, UserAction, UpdateType }
 export default class EventPresenter {
   #container = null;
   #event = null;
-  #eventElementView = null;
-  #newEventElementView = null;
+  #eventView = null;
+  #editEventView = null;
   #handleChange = null;
   #changeMode = null;
   #deleteEvent = null;
@@ -25,11 +25,11 @@ export default class EventPresenter {
 
   init = (event) => {
     this.#event = event;
-    const prevEventView = this.#eventElementView;
-    const prevEventEditView = this.#newEventElementView;
+    const prevEventView = this.#eventView;
+    const prevEventEditView = this.#editEventView;
 
-    this.#eventElementView = new EventItemView(event);
-    this.#newEventElementView = new EditEventView(this.#allOffers, this.#allDestinations, true, event);
+    this.#eventView = new EventItemView(event);
+    this.#editEventView = new EditEventView(this.#allOffers, this.#allDestinations, true, event);
 
     this.#setHandlers();
     if(prevEventView === null || prevEventEditView === null) {
@@ -38,10 +38,10 @@ export default class EventPresenter {
     }
 
     if(this.#container.contains(prevEventView.element)) {
-      replace(this.#eventElementView.element, prevEventView.element);
+      replace(this.#eventView.element, prevEventView.element);
     }
     if(this.#container.contains(prevEventEditView.element)) {
-      replace(this.#newEventElementView.element, prevEventEditView.element);
+      replace(this.#editEventView.element, prevEventEditView.element);
     }
   }
 
@@ -52,13 +52,13 @@ export default class EventPresenter {
   }
 
   #replaceCardToForm = () => {
-    replace(this.#newEventElementView.element, this.#eventElementView.element);
+    replace(this.#editEventView.element, this.#eventView.element);
     this.#changeMode();
     this.#mode = Mode.EDITING;
   };
 
   #replaceFormToCard = () => {
-    replace(this.#eventElementView.element, this.#newEventElementView.element);
+    replace(this.#eventView.element, this.#editEventView.element);
     this.#mode = Mode.DEFAULT;
   };
 
@@ -78,16 +78,16 @@ export default class EventPresenter {
   };
 
   #setHandlers = () => {
-    this.#eventElementView.setEditClickHandler(() => {
+    this.#eventView.setEditClickHandler(() => {
       this.#replaceCardToForm();
       document.addEventListener('keydown', this.#handleEscKeyDown);
     });
 
-    this.#eventElementView.setFavoriteClickHandler(() =>
+    this.#eventView.setFavoriteClickHandler(() =>
       this.#handleFavoriteClick()
     );
 
-    this.#newEventElementView.setSaveButtonHandler((event) => {
+    this.#editEventView.setSaveButtonHandler((event) => {
       const isPriceDifferent = this.#event.price !== event.price;
       const isDateDifferent = this.#event.startDate !== event.startDate || this.#event.finishDate !== event.finishDate;
       const isDestinationDifferent = this.#event.destination !== event.destination;
@@ -100,22 +100,22 @@ export default class EventPresenter {
       this.#replaceFormToCard();
     });
 
-    this.#newEventElementView.setDeleteButtonHandler((event) => {
+    this.#editEventView.setDeleteButtonHandler((event) => {
       this.#deleteEvent(
         UserAction.DELETE_EVENT,
         UpdateType.MINOR,
         event);
     });
 
-    this.#newEventElementView.setCancelButtonHandler(this.#replaceFormToCard);
+    this.#editEventView.setCancelButtonHandler(this.#replaceFormToCard);
   }
 
   #renderEvent = () => {
-    render(this.#container, this.#eventElementView, RenderPosition.BEFORREEND);
+    render(this.#container, this.#eventView, RenderPosition.BEFORREEND);
   }
 
   destroy = () => {
-    remove(this.#eventElementView);
-    remove(this.#newEventElementView);
+    remove(this.#eventView);
+    remove(this.#editEventView);
   }
 }
