@@ -30,6 +30,7 @@ module.exports = {
             presenter: path.resolve(__dirname, './src/presenter/'),
             utils: path.resolve(__dirname, './src/utils/'),
             model: path.resolve(__dirname, './src/model/'),
+            apis: path.resolve(__dirname, './src/apis/'),
           },
     }
 }

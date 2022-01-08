@@ -4,6 +4,7 @@ import NoEventView from 'view/no-event-view';
 import { countTotalSum, render, RenderPosition, sort, SortingType, UserAction, UpdateType, filter, remove, FilterType } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
 import NewEventPresenter from 'presenter/new-event-presenter';
+import LoadingView from 'view/loading-view.js';
 
 export default class TripPresenter {
   #pointsModel = null;
@@ -14,11 +15,12 @@ export default class TripPresenter {
   #tripEvents = null;
   #tripInfoView = null;
   #tripEventsList = null;
+  #noEventView = null;
   #filterType = FilterType.EVERYTHING;
   #eventPresenters = new Map();
-
+  #loadingView = new LoadingView();
   #eventListView = new EventListView();
-  #noEventView = null;
+  #isLoading = true;
 
   constructor(pointsModel, tripMain, tripEvents, filterModel, sortingModel) {
     this.#pointsModel = pointsModel;
@@ -33,12 +35,36 @@ export default class TripPresenter {
 
   get events() {
     this.#filterType = this.#filterModel.filter;
-    const filteredEvents = filter[this.#filterType](this.#pointsModel.events);
-    return sort(filteredEvents, this.#sortingModel.sortType);
+    const events = this.#pointsModel.events;
+    if(!events) {
+      return [];
+    }
+    const filteredEvents = filter[this.#filterType](events);
+    const sortedEvents = sort(filteredEvents, this.#sortingModel.sortType);
+    return sortedEvents;
+  }
+
+  get allOffers() {
+    const offers = this.#pointsModel.allOffers;
+    if(!offers) {
+      return [];
+    }
+    return offers;
+  }
+
+  get allDestinations() {
+    const destinations = this.#pointsModel.allDestinations;
+    if(!destinations) {
+      return [];
+    }
+
+    return destinations;
   }
 
   init = () => {
-    this.#totalPrice = countTotalSum(this.events);
+    if(this.events.length) {
+      this.#totalPrice = countTotalSum(this.events);
+    }
     this.#tripInfoView = new TripInfoView(this.#totalPrice);
     this.#renderEventListView();
     this.#renderPageContent();
@@ -59,6 +85,11 @@ export default class TripPresenter {
         break;
       case UpdateType.MAJOR:
         this.clearEventList();
+        this.renderEvents();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingView);
         this.renderEvents();
         break;
     }
@@ -103,8 +134,12 @@ export default class TripPresenter {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
     this.#sortingModel.setSortType(UpdateType.MINOR, SortingType.DAY);
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    const newEventPresenter = new NewEventPresenter(this.#tripEventsList, this.#handleEventAdd, callback);
+    const newEventPresenter = new NewEventPresenter(this.allOffers, this.allDestinations, this.#tripEventsList, this.#handleEventAdd, callback);
     newEventPresenter.init();
+  }
+
+  #renderLoading = () => {
+    render(this.#tripEvents, this.#loadingView, RenderPosition.AFTERBEGIN);
   }
 
   #renderTripInfoView = () => {
@@ -117,12 +152,22 @@ export default class TripPresenter {
   }
 
   renderEvents = () => {
-    if(!this.events.length) {
+    if(this.#noEventView) {
+      remove(this.#noEventView);
+    }
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
+    if(!this.events || !this.events.length) {
       this.#renderNoEventView();
+      return;
     }
 
     for(const event of this.events) {
-      const eventPresenter = new EventPresenter(this.#tripEventsList, this.#handleEventChange, this.#handleModeChange, this.#handleEventDelete);
+      const eventPresenter = new EventPresenter(this.allOffers, this.allDestinations, this.#tripEventsList, this.#handleEventChange, this.#handleModeChange, this.#handleEventDelete);
       eventPresenter.init(event);
       this.#eventPresenters.set(event.id, eventPresenter);
     }
@@ -136,6 +181,10 @@ export default class TripPresenter {
   clearEventList = () => {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
+
+    if (this.#loadingView) {
+      remove(this.#loadingView);
+    }
 
     if (this.#noEventView) {
       remove(this.#noEventView);

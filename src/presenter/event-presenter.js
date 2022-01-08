@@ -10,13 +10,17 @@ export default class EventPresenter {
   #handleChange = null;
   #changeMode = null;
   #deleteEvent = null;
+  #allOffers = [];
+  #allDestinations = [];
   #mode = Mode.DEFAULT;
 
-  constructor(container, handleChange, changeMode, deleteEvent) {
+  constructor(allOffers, allDestinations, container, handleChange, changeMode, deleteEvent) {
     this.#container = container;
     this.#handleChange = handleChange;
     this.#changeMode = changeMode;
     this.#deleteEvent = deleteEvent;
+    this.#allOffers = allOffers;
+    this.#allDestinations = allDestinations;
   }
 
   init = (event) => {
@@ -25,7 +29,7 @@ export default class EventPresenter {
     const prevEventEditView = this.#newEventElementView;
 
     this.#eventElementView = new EventItemView(event);
-    this.#newEventElementView = new EditEventView(true, event);
+    this.#newEventElementView = new EditEventView(this.#allOffers, this.#allDestinations, true, event);
 
     this.#setHandlers();
     if(prevEventView === null || prevEventEditView === null) {

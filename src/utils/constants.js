@@ -45,7 +45,8 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MAJOR: 'MAJOR'
+  MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export const NoEventTextType = {
@@ -57,4 +58,10 @@ export const MenuItems = {
   TABLE: 'Table',
   STATS: 'Stats',
   NEW_EVENT: 'New event'
+};
+
+export const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
 };
