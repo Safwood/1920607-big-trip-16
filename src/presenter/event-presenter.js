@@ -1,5 +1,6 @@
 import EventItemView from 'view/event-item-view';
 import EditEventView from 'view/edit-event-view';
+import { State } from 'utils';
 import { render, RenderPosition, replace, Mode, remove, UserAction, UpdateType } from 'utils';
 
 export default class EventPresenter {
@@ -41,13 +42,46 @@ export default class EventPresenter {
       replace(this.#eventView.element, prevEventView.element);
     }
     if(this.#container.contains(prevEventEditView.element)) {
-      replace(this.#editEventView.element, prevEventEditView.element);
+      replace(this.#eventView.element, prevEventEditView.element);
+      this.#mode = Mode.DEFAULT;
     }
   }
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
       this.#replaceFormToCard();
+    }
+  }
+
+  setViewState = (state) => {
+    if (this.#mode === Mode.DEFAULT) {
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editEventView.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this.#editEventView.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this.#editEventView.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this.#editEventView.shake(resetFormState);
+        break;
     }
   }
 
@@ -97,7 +131,6 @@ export default class EventPresenter {
         UserAction.UPDATE_EVENT,
         updateType,
         event);
-      this.#replaceFormToCard();
     });
 
     this.#editEventView.setDeleteButtonHandler((event) => {
