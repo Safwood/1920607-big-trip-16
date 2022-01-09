@@ -6,7 +6,6 @@ export const RenderPosition = {
 };
 
 export const BLANK_EVENT = {
-  id: null,
   destination: '',
   type: 'Taxi',
   startDate: 0,
@@ -14,6 +13,7 @@ export const BLANK_EVENT = {
   price: 0,
   offers: [],
   photos: [],
+  isFavorite: false,
   description: '',
 };
 
@@ -64,4 +64,11 @@ export const Method = {
   GET: 'GET',
   PUT: 'PUT',
   POST: 'POST',
+  DELETE: 'DELETE',
+};
+
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
 };

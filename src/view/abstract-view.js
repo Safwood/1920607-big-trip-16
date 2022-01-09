@@ -1,5 +1,6 @@
 import { createElement } from '../utils';
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 export default class AbstractView {
   #element = null;
@@ -21,6 +22,14 @@ export default class AbstractView {
 
   get template() {
     throw new Error('Replace abstract method "template" for your own.');
+  }
+
+  shake(callback) {
+    this.element.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      this.element.style.animation = '';
+      callback();
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   removeElement() {

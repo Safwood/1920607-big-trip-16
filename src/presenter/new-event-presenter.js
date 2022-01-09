@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import {UserAction, UpdateType} from 'utils';
 import EditEventView from 'view/edit-event-view';
 import { render, RenderPosition, remove } from 'utils';
@@ -6,7 +5,7 @@ import { render, RenderPosition, remove } from 'utils';
 export default class NewEventPresenter {
   #container = null;
   #handleAddNewEvent = null;
-  #newEventElementView = null;
+  #newEventView = null;
   #closeCallback = null;
   #allOffers = null;
   #allDestinations = null;
@@ -20,16 +19,35 @@ export default class NewEventPresenter {
   }
 
   init = () => {
-    if (this.#newEventElementView !== null) {
+    if (this.#newEventView !== null) {
       return;
     }
 
-    this.#newEventElementView = new EditEventView(this.#allOffers, this.#allDestinations, false);
+    this.#newEventView = new EditEventView(this.#allOffers, this.#allDestinations, false);
 
-    render(this.#container, this.#newEventElementView, RenderPosition.AFTERBEGIN);
+    render(this.#container, this.#newEventView, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#handleEscKeyDown);
     this.#setHandlers();
+  }
+
+  setSaving = () => {
+    this.#newEventView.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#newEventView.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#newEventView.shake(resetFormState);
   }
 
   #handleEscKeyDown = (e) => {
@@ -37,8 +55,8 @@ export default class NewEventPresenter {
       e.preventDefault();
       this.destroy();
       document.querySelector('.trip-main__event-add-btn').removeAttribute('disabled', '');
+      this.#closeCallback(e);
     }
-    this.#closeCallback();
   };
 
   #handleCancelClick = () => {
@@ -48,29 +66,26 @@ export default class NewEventPresenter {
   }
 
   #setHandlers = () => {
-    this.#newEventElementView.setSaveButtonHandler((event) => {
+    this.#newEventView.setSaveButtonHandler((event) => {
       this.#handleAddNewEvent(
         UserAction.ADD_EVENT,
         UpdateType.MINOR,
-        {...event, id: nanoid(3)},
+        {...event},
       );
-
-      this.#closeCallback();
-      this.destroy();
     });
 
-    this.#newEventElementView.setCancelButtonHandler(() => {
+    this.#newEventView.setCancelButtonHandler(() => {
       this.#handleCancelClick();
     });
 
   }
 
   destroy = () => {
-    if (this.#newEventElementView === null) {
+    if (this.#newEventView === null) {
       return;
     }
-    remove(this.#newEventElementView);
-    this.#newEventElementView = null;
+    remove(this.#newEventView);
+    this.#newEventView = null;
 
     document.removeEventListener('keydown', this.#handleEscKeyDown);
   }
