@@ -1,7 +1,7 @@
 import TripInfoView from 'view/trip-info-view';
 import EventListView from 'view/event-list-view';
 import NoEventView from 'view/no-event-view';
-import { countTotalSum, render, RenderPosition, sort, SortingType, UserAction, UpdateType, filter, remove, FilterType } from 'utils';
+import { countTotalSum, render, RenderPosition, sort, SortingType, UserAction, UpdateType, filter, remove, FilterType, State } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
 import NewEventPresenter from 'presenter/new-event-presenter';
 import LoadingView from 'view/loading-view.js';
@@ -16,18 +16,21 @@ export default class TripPresenter {
   #tripInfoView = null;
   #tripEventsList = null;
   #noEventView = null;
+  #handleNewEventFormClose = null;
   #filterType = FilterType.EVERYTHING;
   #eventPresenters = new Map();
   #loadingView = new LoadingView();
   #eventListView = new EventListView();
   #isLoading = true;
+  #newEventPresenter;
 
-  constructor(pointsModel, tripMain, tripEvents, filterModel, sortingModel) {
+  constructor(pointsModel, tripMain, tripEvents, filterModel, sortingModel, handleNewEventFormClose) {
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
     this.#sortingModel = sortingModel;
     this.#tripMain = tripMain;
     this.#tripEvents = tripEvents;
+    this.#handleNewEventFormClose = handleNewEventFormClose;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
     this.#sortingModel.addObserver(this.#handleModelEvent);
@@ -95,16 +98,34 @@ export default class TripPresenter {
     }
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this.#pointsModel.changeEvent(updateType, update);
+        this.#eventPresenters.get(update.id).setViewState(State.SAVING);
+        try {
+          await this.#pointsModel.changeEvent(updateType, update);
+        } catch(err) {
+          this.#eventPresenters.get(update.id).setViewState(State.ABORTING);
+        }
         break;
       case UserAction.ADD_EVENT:
-        this.#pointsModel.addEvent(updateType, update);
+        this.#newEventPresenter.setSaving();
+        try {
+          await this.#pointsModel.addEvent(updateType, update);
+          this.#newEventPresenter.destroy();
+          this.#handleNewEventFormClose();
+        } catch(err) {
+          this.#newEventPresenter.setAborting();
+        }
+
         break;
       case UserAction.DELETE_EVENT:
-        this.#pointsModel.removeEvent(updateType, update);
+        this.#eventPresenters.get(update.id).setViewState(State.DELETING);
+        try {
+          await this.#pointsModel.removeEvent(updateType, update);
+        } catch(err) {
+          this.#eventPresenters.get(update.id).setViewState(State.ABORTING);
+        }
         break;
     }
   }
@@ -129,13 +150,13 @@ export default class TripPresenter {
     this.#tripEventsList = document.querySelector('.trip-events__list');
   }
 
-  openAddEventForm = (callback) => {
+  openAddEventForm = () => {
     document.querySelector('.trip-main__event-add-btn').setAttribute('disabled', '');
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
     this.#sortingModel.setSortType(UpdateType.MINOR, SortingType.DAY);
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    const newEventPresenter = new NewEventPresenter(this.allOffers, this.allDestinations, this.#tripEventsList, this.#handleEventAdd, callback);
-    newEventPresenter.init();
+    this.#newEventPresenter = new NewEventPresenter(this.allOffers, this.allDestinations, this.#tripEventsList, this.#handleEventAdd, this.#handleNewEventFormClose);
+    this.#newEventPresenter.init();
   }
 
   #renderLoading = () => {

@@ -62,22 +62,35 @@ export default class PointsModel extends AbstractObserver {
   changeEvent = async (updateType, update) => {
     try {
       const response = await this.#apiService.updateEvent(update);
-      const updatedEvent = this.#adaptToClient(response);
+      const udaptedEvent = this.#adaptToClient(response);
 
-      this.#events = updateItem(this.#events, updatedEvent);
-      this._notify(updateType, updatedEvent);
-    } catch(e) {
+      this.#events = updateItem(this.#events, udaptedEvent);
+      this._notify(updateType, udaptedEvent);
+    } catch {
       throw new Error('Can\'t update event');
     }
   }
 
-  addEvent = (updateType, addedEvent) => {
-    this.#events = addItem(this.#events, addedEvent);
-    this._notify(updateType, addedEvent);
+  addEvent = async (updateType, addedEvent) => {
+    try {
+      const response = await this.#apiService.addEvent(addedEvent);
+      const udaptedEvent = this.#adaptToClient(response);
+      this.#events = addItem(this.#events, udaptedEvent);
+      this._notify(updateType, udaptedEvent);
+
+    } catch {
+      throw new Error('Can\'t add event');
+    }
   }
 
-  removeEvent = (updateType, removedEvent) => {
-    this.#events = removeElement(this.#events, removedEvent);
-    this._notify(updateType, removedEvent);
+  removeEvent = async (updateType, removedEvent) => {
+    try {
+      await this.#apiService.deleteEvent(removedEvent);
+      this.#events = removeElement(this.#events, removedEvent);
+      this._notify(updateType, removedEvent);
+
+    } catch {
+      throw new Error('Can\'t remove event');
+    }
   }
 }

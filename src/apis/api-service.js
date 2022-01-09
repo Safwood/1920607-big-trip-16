@@ -82,6 +82,26 @@ export default class ApiService {
     return parsedResponse;
   }
 
+  addEvent = async (event) => {
+    const response = await this.#load({
+      url: 'points',
+      method: Method.POST,
+      body: JSON.stringify(this.#adaptToServer(event)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
+  }
+
+  deleteEvent = async (event) => {
+    await this.#load({
+      url: `points/${event.id}`,
+      method: Method.DELETE,
+    });
+  }
+
   #adaptToServer = (event) => {
     const adaptedEvent = {...event,
       'date_from': event.startDate instanceof Date ? event.startDate.toISOString() : null,
