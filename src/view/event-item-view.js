@@ -82,6 +82,16 @@ export default class EventItemView extends AbstractView {
     this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#setFavorite);
   }
 
+  removeEditClickHandler = () => {
+    this.element.querySelector('.event__rollup-btn').removeEventListener('click', this.#editElement);
+    delete this._callback.editEventItem;
+  }
+
+  removeFavoriteClickHandler = () => {
+    this.element.querySelector('.event__favorite-btn').removeEventListener('click', this.#setFavorite);
+    delete this._callback.setIsFavorite;
+  }
+
   #editElement = (e) => {
     e.preventDefault();
     this._callback.editEventItem();

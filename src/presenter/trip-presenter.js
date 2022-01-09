@@ -14,7 +14,8 @@ import {
   FilterType,
   State,
   getEventRoute,
-  getEventDates
+  getEventDates,
+  InnerEventState
 } from 'utils';
 import EventPresenter from 'presenter/event-presenter';
 import NewEventPresenter from 'presenter/new-event-presenter';
@@ -39,6 +40,7 @@ export default class TripPresenter {
   #eventListView = new EventListView();
   #isLoading = true;
   #newEventPresenter;
+  #innerEventState = InnerEventState.UNBLOCKED;
 
   constructor(pointsModel, tripMain, tripEvents, filterModel, sortingModel) {
     this.#pointsModel = pointsModel;
@@ -89,12 +91,14 @@ export default class TripPresenter {
   }
 
   #blockEvents = () => {
+    this.#innerEventState = InnerEventState.BLOCKED;
     this.#eventPresenters.forEach((presenter) => {
       presenter.blockEventHandlers();
     });
   }
 
   unblockEvents = () => {
+    this.#innerEventState = InnerEventState.UNBLOCKED;
     this.#eventPresenters.forEach((presenter) => {
       presenter.unblockEventHandlers();
     });
@@ -241,7 +245,7 @@ export default class TripPresenter {
     }
 
     for(const event of this.events) {
-      const eventPresenter = new EventPresenter(this.allOffers, this.allDestinations, this.#tripEventsList, this.#handleEventChange, this.#handleModeChange, this.#handleEventDelete);
+      const eventPresenter = new EventPresenter(this.allOffers, this.allDestinations, this.#tripEventsList, this.#handleEventChange, this.#handleModeChange, this.#handleEventDelete, this.#innerEventState);
       eventPresenter.init(event);
       this.#eventPresenters.set(event.id, eventPresenter);
     }

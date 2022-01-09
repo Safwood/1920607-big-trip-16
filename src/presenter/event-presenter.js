@@ -14,15 +14,16 @@ export default class EventPresenter {
   #allOffers = [];
   #allDestinations = [];
   #mode = Mode.DEFAULT;
-  #innerEventState = InnerEventState.BLOCKED;
+  #innerEventState = null;
 
-  constructor(allOffers, allDestinations, container, handleChange, changeMode, deleteEvent) {
+  constructor(allOffers, allDestinations, container, handleChange, changeMode, deleteEvent, innerEventState) {
     this.#container = container;
     this.#handleChange = handleChange;
     this.#changeMode = changeMode;
     this.#deleteEvent = deleteEvent;
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
+    this.#innerEventState = innerEventState;
   }
 
   get eventView() {
@@ -159,7 +160,7 @@ export default class EventPresenter {
   }
 
   blockEventHandlers = () => {
-    this.#innerEventState = InnerEventState.BLOCKED;
+    this.#eventView.removeEditClickHandler();
   }
 
   unblockEventHandlers = () => {
