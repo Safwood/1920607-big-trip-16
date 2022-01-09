@@ -27,6 +27,7 @@ const handleNewEventFormClose = () => {
   siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--disabled');
   siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.remove('trip-tabs__btn--disabled');
   siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.add('trip-tabs__btn--active');
+  tripPresenter.unblockEvents()
 };
 
 const filterPresenter = new FilterPresenter(tripFilterContainer, filterModel, pointsModel);

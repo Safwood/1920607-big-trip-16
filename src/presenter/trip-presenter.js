@@ -88,6 +88,18 @@ export default class TripPresenter {
     this.#renderPageContent();
   }
 
+  #blockEvents = () => {
+    this.#eventPresenters.forEach(presenter => {
+      presenter.blockEventHandlers()
+    })
+  }
+
+  unblockEvents = () => {
+    this.#eventPresenters.forEach(presenter => {
+      presenter.unblockEventHandlers()
+    })
+  }
+
   #handleModeChange = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   }
@@ -178,6 +190,7 @@ export default class TripPresenter {
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newEventPresenter = new NewEventPresenter(this.allOffers, this.allDestinations, this.#tripEventsList, this.#handleEventAdd, this.#handleNewEventFormClose);
     this.#newEventPresenter.init();
+    this.#blockEvents()
   }
 
   #renderLoading = () => {

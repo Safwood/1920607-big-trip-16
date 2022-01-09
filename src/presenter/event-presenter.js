@@ -1,7 +1,7 @@
 import EventItemView from 'view/event-item-view';
 import EditEventView from 'view/edit-event-view';
 import { State } from 'utils';
-import { render, RenderPosition, replace, Mode, remove, UserAction, UpdateType } from 'utils';
+import { render, RenderPosition, replace, Mode, remove, UserAction, UpdateType, InnerEventState } from 'utils';
 
 export default class EventPresenter {
   #container = null;
@@ -14,6 +14,7 @@ export default class EventPresenter {
   #allOffers = [];
   #allDestinations = [];
   #mode = Mode.DEFAULT;
+  #innerEventState = InnerEventState.BLOCKED;
 
   constructor(allOffers, allDestinations, container, handleChange, changeMode, deleteEvent) {
     this.#container = container;
@@ -22,6 +23,10 @@ export default class EventPresenter {
     this.#deleteEvent = deleteEvent;
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
+  }
+
+  get eventView() {
+    return this.#eventView
   }
 
   init = (event) => {
@@ -111,15 +116,21 @@ export default class EventPresenter {
     }
   };
 
-  #setHandlers = () => {
-    this.#eventView.setEditClickHandler(() => {
-      this.#replaceCardToForm();
-      document.addEventListener('keydown', this.#handleEscKeyDown);
-    });
+  #setEventCardHandlers = () => {
+    if(this.#innerEventState !== InnerEventState.BLOCKED) {
+      this.#eventView.setEditClickHandler(() => {
+        this.#replaceCardToForm();
+        document.addEventListener('keydown', this.#handleEscKeyDown);
+      });
 
-    this.#eventView.setFavoriteClickHandler(() =>
-      this.#handleFavoriteClick()
-    );
+      this.#eventView.setFavoriteClickHandler(() =>
+        this.#handleFavoriteClick()
+      );
+    }
+  }
+
+  #setHandlers = () => {
+    this.#setEventCardHandlers();
 
     this.#editEventView.setSaveButtonHandler((event) => {
       const isPriceDifferent = this.#event.price !== event.price;
@@ -145,6 +156,15 @@ export default class EventPresenter {
 
   #renderEvent = () => {
     render(this.#container, this.#eventView, RenderPosition.BEFORREEND);
+  }
+
+  blockEventHandlers = () => {
+    this.#innerEventState = InnerEventState.BLOCKED;
+  }
+
+  unblockEventHandlers = () => {
+    this.#innerEventState = InnerEventState.UNBLOCKED;
+    this.#setEventCardHandlers()
   }
 
   destroy = () => {
