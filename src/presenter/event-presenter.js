@@ -136,7 +136,7 @@ export default class EventPresenter {
     this.#editEventView.setDeleteButtonHandler((event) => {
       this.#deleteEvent(
         UserAction.DELETE_EVENT,
-        UpdateType.MINOR,
+        UpdateType.MAJOR,
         event);
     });
 
