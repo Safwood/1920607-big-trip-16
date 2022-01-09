@@ -74,6 +74,6 @@ export const State = {
 };
 
 export const InnerEventState ={
- BLOCKED: 'BLOCKED',
- UNBLOCKED: 'UNBLOCKED'
-}
+  BLOCKED: 'BLOCKED',
+  UNBLOCKED: 'UNBLOCKED'
+};

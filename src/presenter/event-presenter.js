@@ -26,7 +26,7 @@ export default class EventPresenter {
   }
 
   get eventView() {
-    return this.#eventView
+    return this.#eventView;
   }
 
   init = (event) => {
@@ -164,7 +164,7 @@ export default class EventPresenter {
 
   unblockEventHandlers = () => {
     this.#innerEventState = InnerEventState.UNBLOCKED;
-    this.#setEventCardHandlers()
+    this.#setEventCardHandlers();
   }
 
   destroy = () => {

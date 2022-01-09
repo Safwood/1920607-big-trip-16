@@ -40,13 +40,12 @@ export default class TripPresenter {
   #isLoading = true;
   #newEventPresenter;
 
-  constructor(pointsModel, tripMain, tripEvents, filterModel, sortingModel, handleNewEventFormClose) {
+  constructor(pointsModel, tripMain, tripEvents, filterModel, sortingModel) {
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
     this.#sortingModel = sortingModel;
     this.#tripMain = tripMain;
     this.#tripEvents = tripEvents;
-    this.#handleNewEventFormClose = handleNewEventFormClose;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
     this.#sortingModel.addObserver(this.#handleModelEvent);
@@ -80,7 +79,8 @@ export default class TripPresenter {
     return destinations;
   }
 
-  init = () => {
+  init = (handleNewEventFormClose) => {
+    this.#handleNewEventFormClose = handleNewEventFormClose;
     this.#renderEventListView();
     this.#countTotalSum();
     this.#getRoute();
@@ -89,15 +89,15 @@ export default class TripPresenter {
   }
 
   #blockEvents = () => {
-    this.#eventPresenters.forEach(presenter => {
-      presenter.blockEventHandlers()
-    })
+    this.#eventPresenters.forEach((presenter) => {
+      presenter.blockEventHandlers();
+    });
   }
 
   unblockEvents = () => {
-    this.#eventPresenters.forEach(presenter => {
-      presenter.unblockEventHandlers()
-    })
+    this.#eventPresenters.forEach((presenter) => {
+      presenter.unblockEventHandlers();
+    });
   }
 
   #handleModeChange = () => {
@@ -190,7 +190,7 @@ export default class TripPresenter {
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newEventPresenter = new NewEventPresenter(this.allOffers, this.allDestinations, this.#tripEventsList, this.#handleEventAdd, this.#handleNewEventFormClose);
     this.#newEventPresenter.init();
-    this.#blockEvents()
+    this.#blockEvents();
   }
 
   #renderLoading = () => {

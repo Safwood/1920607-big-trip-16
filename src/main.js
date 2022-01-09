@@ -23,16 +23,16 @@ const filterModel = new FilterModel();
 const sortingModel = new SortingModel();
 const siteMenuView = new SiteMenuView();
 
+const filterPresenter = new FilterPresenter(tripFilterContainer, filterModel, pointsModel);
+const sortingPresenter = new SortingPresenter(tripEvents, sortingModel, pointsModel);
+const tripPresenter = new TripPresenter(pointsModel, tripMain, tripEvents, filterModel, sortingModel);
+
 const handleNewEventFormClose = () => {
   siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--disabled');
   siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.remove('trip-tabs__btn--disabled');
   siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.add('trip-tabs__btn--active');
-  tripPresenter.unblockEvents()
+  tripPresenter.unblockEvents();
 };
-
-const filterPresenter = new FilterPresenter(tripFilterContainer, filterModel, pointsModel);
-const sortingPresenter = new SortingPresenter(tripEvents, sortingModel, pointsModel);
-const tripPresenter = new TripPresenter(pointsModel, tripMain, tripEvents, filterModel, sortingModel, handleNewEventFormClose);
 
 let chartView;
 
@@ -71,7 +71,7 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-tripPresenter.init();
+tripPresenter.init(handleNewEventFormClose);
 pointsModel.init().finally(() => {
   filterPresenter.init();
   sortingPresenter.init();

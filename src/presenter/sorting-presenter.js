@@ -6,7 +6,7 @@ export default class SortingPresenter {
   #sortingModel = null;
   #tripSortingView = null;
 
-  constructor(container, sortingModel, pointsModel) {
+  constructor(container, sortingModel) {
     this.#container = container;
     this.#sortingModel = sortingModel;
   }
