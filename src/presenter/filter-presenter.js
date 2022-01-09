@@ -36,12 +36,12 @@ export default class FilterPresenter {
     const result = [];
     const events = this.#pointsModel.events;
 
-    if(!events) return
-    if(!events.length) return [FilterType.EVERYTHING, FilterType.FUTURE, FilterType.FUTURE]
-    if(!(filter[FilterType.FUTURE](events)).length) result.push(FilterType.FUTURE)
-    if(!(filter[FilterType.PAST](events)).length) result.push(FilterType.PAST)
+    if(!events) {return [];}
+    if(!events.length) {return [FilterType.EVERYTHING, FilterType.FUTURE, FilterType.FUTURE];}
+    if(!(filter[FilterType.FUTURE](events)).length) {result.push(FilterType.FUTURE);}
+    if(!(filter[FilterType.PAST](events)).length) {result.push(FilterType.PAST);}
 
-    return result
+    return result;
   }
 
   #addFilterHandler = () => {
@@ -70,6 +70,5 @@ export default class FilterPresenter {
 
     this.#pointsModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
-
   }
 }

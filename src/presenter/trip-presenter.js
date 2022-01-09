@@ -1,18 +1,18 @@
 import TripInfoView from 'view/trip-info-view';
 import EventListView from 'view/event-list-view';
 import NoEventView from 'view/no-event-view';
-import { 
-  countTotalSum, 
-  render, 
-  RenderPosition, 
-  sort, 
-  SortingType, 
-  UserAction, 
-  UpdateType, 
-  filter, 
-  remove, 
-  FilterType, 
-  State, 
+import {
+  countTotalSum,
+  render,
+  RenderPosition,
+  sort,
+  SortingType,
+  UserAction,
+  UpdateType,
+  filter,
+  remove,
+  FilterType,
+  State,
   getEventRoute,
   getEventDates
 } from 'utils';
@@ -82,9 +82,9 @@ export default class TripPresenter {
 
   init = () => {
     this.#renderEventListView();
-    this.#countTotalSum()
-    this.#getRoute()
-    this.#getEventDates()
+    this.#countTotalSum();
+    this.#getRoute();
+    this.#getEventDates();
     this.#renderPageContent();
   }
 
@@ -103,17 +103,17 @@ export default class TripPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearPageContent();
-        this.#countTotalSum()
-        this.#getRoute()
-        this.#getEventDates()
+        this.#countTotalSum();
+        this.#getRoute();
+        this.#getEventDates();
         this.#renderPageContent();
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
         this.#clearPageContent();
-        this.#countTotalSum()
-        this.#getRoute()
-        this.#getEventDates()
+        this.#countTotalSum();
+        this.#getRoute();
+        this.#getEventDates();
         this.#renderPageContent();
         break;
     }
@@ -240,7 +240,7 @@ export default class TripPresenter {
   }
 
   #clearPageContent = () => {
-    remove(this.#tripInfoView)
+    remove(this.#tripInfoView);
     this.clearEventList();
   }
 
