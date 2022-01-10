@@ -135,9 +135,10 @@ export default class EventPresenter {
 
     this.#editEventView.setSaveButtonHandler((event) => {
       const isPriceDifferent = this.#event.price !== event.price;
+      const isOffersListDifferent = this.#event.offers.length !== event.offers.length;
       const isDateDifferent = this.#event.startDate !== event.startDate || this.#event.finishDate !== event.finishDate;
       const isDestinationDifferent = this.#event.destination !== event.destination;
-      const updateType = isPriceDifferent || isDateDifferent || isDestinationDifferent ? UpdateType.MAJOR : UpdateType.MINOR;
+      const updateType = isOffersListDifferent || isPriceDifferent || isDateDifferent || isDestinationDifferent ? UpdateType.MAJOR : UpdateType.MINOR;
 
       this.#handleChange(
         UserAction.UPDATE_EVENT,
