@@ -72,3 +72,8 @@ export const State = {
   DELETING: 'DELETING',
   ABORTING: 'ABORTING',
 };
+
+export const InnerEventState ={
+  BLOCKED: 'BLOCKED',
+  UNBLOCKED: 'UNBLOCKED'
+};

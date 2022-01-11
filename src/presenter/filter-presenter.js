@@ -1,11 +1,12 @@
 import TripFilterView from 'view/trip-filter-view';
-import { render, RenderPosition, remove, UpdateType, replace, FilterType } from 'utils';
+import { render, RenderPosition, remove, UpdateType, replace, FilterType, filter } from 'utils';
 
 export default class FilterPresenter {
   #container = null;
   #tripFilterView = null;
   #filterModel = null;
   #pointsModel = null;
+  #disabledFilters = [];
 
   constructor(container, filterModel, pointsModel) {
     this.#container = container;
@@ -15,7 +16,8 @@ export default class FilterPresenter {
 
   init = () => {
     const prevComponent = this.#tripFilterView;
-    this.#tripFilterView = new TripFilterView(this.#filterModel.filter);
+    this.#disabledFilters = this.disabledFilters;
+    this.#tripFilterView = new TripFilterView(this.#filterModel.filter, this.#disabledFilters);
     this.#addFilterHandler();
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -28,6 +30,18 @@ export default class FilterPresenter {
 
     replace(this.#tripFilterView, prevComponent);
     remove(prevComponent);
+  }
+
+  get disabledFilters() {
+    const result = [];
+    const events = this.#pointsModel.events;
+
+    if(!events) {return [];}
+    if(!events.length) {return [FilterType.EVERYTHING, FilterType.FUTURE, FilterType.FUTURE];}
+    if(!(filter[FilterType.FUTURE](events)).length) {result.push(FilterType.FUTURE);}
+    if(!(filter[FilterType.PAST](events)).length) {result.push(FilterType.PAST);}
+
+    return result;
   }
 
   #addFilterHandler = () => {
@@ -43,8 +57,7 @@ export default class FilterPresenter {
   }
 
   #handleFilterChange = (filterType) => {
-    const isValidFilterType = filterType === FilterType.EVERYTHING || filterType === FilterType.FUTURE || filterType === FilterType.PAST;
-    if(this.#filterModel.filter === filterType || !isValidFilterType) {
+    if(this.#filterModel.filter === filterType || !FilterType[filterType] || this.#disabledFilters.includes(filterType)) {
       return;
     }
 
@@ -57,6 +70,5 @@ export default class FilterPresenter {
 
     this.#pointsModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
-
   }
 }

@@ -23,25 +23,21 @@ const filterModel = new FilterModel();
 const sortingModel = new SortingModel();
 const siteMenuView = new SiteMenuView();
 
-const handleNewEventFormClose = () => {
-  siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--disabled');
-  siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.remove('trip-tabs__btn--disabled');
-  siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.add('trip-tabs__btn--active');
-};
-
 const filterPresenter = new FilterPresenter(tripFilterContainer, filterModel, pointsModel);
 const sortingPresenter = new SortingPresenter(tripEvents, sortingModel, pointsModel);
-const tripPresenter = new TripPresenter(pointsModel, tripMain, tripEvents, filterModel, sortingModel, handleNewEventFormClose);
+const tripPresenter = new TripPresenter(pointsModel, tripMain, tripEvents, filterModel, sortingModel);
+
+const handleNewEventFormClose = () => {
+  siteMenuView.resetButtons();
+  tripPresenter.unblockEvents();
+};
 
 let chartView;
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItems.NEW_EVENT:
-      siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.add('trip-tabs__btn--disabled');
-      siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.add('trip-tabs__btn--disabled');
-      siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--active');
-      siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.remove('trip-tabs__btn--active');
+      siteMenuView.blockMenuButtons();
       tripPresenter.openAddEventForm();
       remove(chartView);
       tripPresenter.clearEventList();
@@ -50,16 +46,14 @@ const handleSiteMenuClick = (menuItem) => {
       sortingPresenter.init();
       break;
     case MenuItems.TABLE:
-      siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.add('trip-tabs__btn--active');
-      siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.remove('trip-tabs__btn--active');
+      siteMenuView.setTableButtonActive();
       remove(chartView);
       tripPresenter.renderEvents();
       filterPresenter.init();
       sortingPresenter.init();
       break;
     case MenuItems.STATS:
-      siteMenuView.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--active');
-      siteMenuView.element.querySelector(`[id=${MenuItems.STATS}]`).classList.add('trip-tabs__btn--active');
+      siteMenuView.setStatButtonActive();
       chartView = new ChartView(pointsModel.events);
       render(pageContainer, chartView, RenderPosition.BEFORREEND);
       chartView.init();
@@ -70,7 +64,7 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-tripPresenter.init();
+tripPresenter.init(handleNewEventFormClose);
 pointsModel.init().finally(() => {
   filterPresenter.init();
   sortingPresenter.init();

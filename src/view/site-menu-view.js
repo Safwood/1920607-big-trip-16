@@ -21,6 +21,29 @@ export default class SiteMenuView extends AbstractView {
     document.querySelector('.trip-main__event-add-btn').addEventListener('click', this.#menuClickHandler);
   }
 
+  blockMenuButtons = () => {
+    this.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.add('trip-tabs__btn--disabled');
+    this.element.querySelector(`[id=${MenuItems.STATS}]`).classList.add('trip-tabs__btn--disabled');
+    this.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--active');
+    this.element.querySelector(`[id=${MenuItems.STATS}]`).classList.remove('trip-tabs__btn--active');
+  }
+
+  resetButtons = () => {
+    this.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--disabled');
+    this.element.querySelector(`[id=${MenuItems.STATS}]`).classList.remove('trip-tabs__btn--disabled');
+    this.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.add('trip-tabs__btn--active');
+  }
+
+  setTableButtonActive = () => {
+    this.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.add('trip-tabs__btn--active');
+    this.element.querySelector(`[id=${MenuItems.STATS}]`).classList.remove('trip-tabs__btn--active');
+  }
+
+  setStatButtonActive = () => {
+    this.element.querySelector(`[id=${MenuItems.TABLE}]`).classList.remove('trip-tabs__btn--active');
+    this.element.querySelector(`[id=${MenuItems.STATS}]`).classList.add('trip-tabs__btn--active');
+  }
+
   #menuClickHandler = (e) => {
     e.preventDefault();
     if(this.#activeMenuItem === e.target.innerText) {

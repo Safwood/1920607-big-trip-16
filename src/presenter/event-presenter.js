@@ -1,7 +1,7 @@
 import EventItemView from 'view/event-item-view';
 import EditEventView from 'view/edit-event-view';
 import { State } from 'utils';
-import { render, RenderPosition, replace, Mode, remove, UserAction, UpdateType } from 'utils';
+import { render, RenderPosition, replace, Mode, remove, UserAction, UpdateType, InnerEventState } from 'utils';
 
 export default class EventPresenter {
   #container = null;
@@ -14,14 +14,20 @@ export default class EventPresenter {
   #allOffers = [];
   #allDestinations = [];
   #mode = Mode.DEFAULT;
+  #innerEventState = null;
 
-  constructor(allOffers, allDestinations, container, handleChange, changeMode, deleteEvent) {
+  constructor(allOffers, allDestinations, container, handleChange, changeMode, deleteEvent, innerEventState) {
     this.#container = container;
     this.#handleChange = handleChange;
     this.#changeMode = changeMode;
     this.#deleteEvent = deleteEvent;
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
+    this.#innerEventState = innerEventState;
+  }
+
+  get eventView() {
+    return this.#eventView;
   }
 
   init = (event) => {
@@ -111,21 +117,28 @@ export default class EventPresenter {
     }
   };
 
-  #setHandlers = () => {
-    this.#eventView.setEditClickHandler(() => {
-      this.#replaceCardToForm();
-      document.addEventListener('keydown', this.#handleEscKeyDown);
-    });
+  #setEventCardHandlers = () => {
+    if(this.#innerEventState !== InnerEventState.BLOCKED) {
+      this.#eventView.setEditClickHandler(() => {
+        this.#replaceCardToForm();
+        document.addEventListener('keydown', this.#handleEscKeyDown);
+      });
 
-    this.#eventView.setFavoriteClickHandler(() =>
-      this.#handleFavoriteClick()
-    );
+      this.#eventView.setFavoriteClickHandler(() =>
+        this.#handleFavoriteClick()
+      );
+    }
+  }
+
+  #setHandlers = () => {
+    this.#setEventCardHandlers();
 
     this.#editEventView.setSaveButtonHandler((event) => {
       const isPriceDifferent = this.#event.price !== event.price;
+      const isOffersListDifferent = this.#event.offers.length !== event.offers.length;
       const isDateDifferent = this.#event.startDate !== event.startDate || this.#event.finishDate !== event.finishDate;
       const isDestinationDifferent = this.#event.destination !== event.destination;
-      const updateType = isPriceDifferent || isDateDifferent || isDestinationDifferent ? UpdateType.MAJOR : UpdateType.MINOR;
+      const updateType = isOffersListDifferent || isPriceDifferent || isDateDifferent || isDestinationDifferent ? UpdateType.MAJOR : UpdateType.MINOR;
 
       this.#handleChange(
         UserAction.UPDATE_EVENT,
@@ -136,7 +149,7 @@ export default class EventPresenter {
     this.#editEventView.setDeleteButtonHandler((event) => {
       this.#deleteEvent(
         UserAction.DELETE_EVENT,
-        UpdateType.MINOR,
+        UpdateType.MAJOR,
         event);
     });
 
@@ -145,6 +158,15 @@ export default class EventPresenter {
 
   #renderEvent = () => {
     render(this.#container, this.#eventView, RenderPosition.BEFORREEND);
+  }
+
+  blockEventHandlers = () => {
+    this.#eventView.removeEditClickHandler();
+  }
+
+  unblockEventHandlers = () => {
+    this.#innerEventState = InnerEventState.UNBLOCKED;
+    this.#setEventCardHandlers();
   }
 
   destroy = () => {

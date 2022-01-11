@@ -69,7 +69,7 @@ export default class NewEventPresenter {
     this.#newEventView.setSaveButtonHandler((event) => {
       this.#handleAddNewEvent(
         UserAction.ADD_EVENT,
-        UpdateType.MINOR,
+        UpdateType.MAJOR,
         {...event},
       );
     });
