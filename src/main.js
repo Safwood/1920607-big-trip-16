@@ -29,7 +29,7 @@ const tripPresenter = new TripPresenter(pointsModel, tripMain, tripEvents, filte
 
 const handleNewEventFormClose = () => {
   siteMenuView.resetButtons();
-  tripPresenter.unblockEvents(); 
+  tripPresenter.unblockEvents();
 };
 
 let chartView;
@@ -37,7 +37,7 @@ let chartView;
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItems.NEW_EVENT:
-      siteMenuView.blockMenuButtons()
+      siteMenuView.blockMenuButtons();
       tripPresenter.openAddEventForm();
       remove(chartView);
       tripPresenter.clearEventList();
@@ -46,7 +46,7 @@ const handleSiteMenuClick = (menuItem) => {
       sortingPresenter.init();
       break;
     case MenuItems.TABLE:
-      siteMenuView.setTableButtonActive()
+      siteMenuView.setTableButtonActive();
       remove(chartView);
       tripPresenter.renderEvents();
       filterPresenter.init();
