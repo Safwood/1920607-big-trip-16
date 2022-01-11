@@ -2,7 +2,7 @@ export const RenderPosition = {
   BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
   BEFORREEND: 'beforeend',
-  AFTEREND: 'afterend'
+  AFTEREND: 'afterend',
 };
 
 export const BLANK_EVENT = {
@@ -31,7 +31,7 @@ export const SortingType = {
 export const FilterType = {
   EVERYTHING: 'EVERYTHING',
   FUTURE: 'FUTURE',
-  PAST: 'PAST'
+  PAST: 'PAST',
 };
 
 export const eventTypes = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
@@ -57,7 +57,7 @@ export const NoEventTextType = {
 export const MenuItems = {
   TABLE: 'Table',
   STATS: 'Stats',
-  NEW_EVENT: 'New event'
+  NEW_EVENT: 'New event',
 };
 
 export const Method = {
@@ -75,5 +75,5 @@ export const State = {
 
 export const InnerEventState ={
   BLOCKED: 'BLOCKED',
-  UNBLOCKED: 'UNBLOCKED'
+  UNBLOCKED: 'UNBLOCKED',
 };
