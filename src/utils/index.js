@@ -1,5 +1,4 @@
 export * from './constants';
-export * from './getRandomIntenger';
 export * from './countDuration';
 export * from './countEventInfo';
 export * from './render';

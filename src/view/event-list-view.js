@@ -1,13 +1,12 @@
 import AbstractView from './abstract-view';
 
-export const creactEventListTemplate = () => (
+export const createEventListTemplate = () => (
   `<ul class="trip-events__list">
   </ul>`
 );
 
 export default class EventListView extends AbstractView {
   get template() {
-    return creactEventListTemplate();
+    return createEventListTemplate();
   }
-
 }
