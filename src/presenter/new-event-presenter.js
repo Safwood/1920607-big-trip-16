@@ -35,6 +35,7 @@ export default class NewEventPresenter {
     this.#newEventView.updateData({
       isDisabled: true,
       isSaving: true,
+      isError: false,
     });
   }
 
@@ -44,6 +45,7 @@ export default class NewEventPresenter {
         isDisabled: false,
         isSaving: false,
         isDeleting: false,
+        isError: true,
       });
     };
 

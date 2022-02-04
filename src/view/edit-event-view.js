@@ -51,13 +51,14 @@ const createPhotoListTemplate = (photos = []) => {
 };
 
 const createNewEventTemplate = (event, isEditing, allDestinations, currentOffers = [], currentPointDescription = {}) => {
-  const { isDisabled, type, offers, price, isSaving, isDeleting } = event;
+  const { isError, isDisabled, type, offers, price, isSaving, isDeleting } = event;
   const { pictures, name, description } = currentPointDescription;
   const photosTemplate = createPhotoListTemplate(pictures);
   const offersTemplate = createOffersTemplate(offers, type, currentOffers, isDisabled);
   const eventTypesTemplate = createAllEventTypesTemplate();
   const destinationsTemplate = createAllDestinationsTemplate(allDestinations, name, type, isDisabled);
   const deleteButton = isDeleting ? 'Deleting...' : 'Delete';
+  const errorText = 'All fields must must be filled in. Price can\'t be 0.';
 
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
@@ -96,6 +97,11 @@ const createNewEventTemplate = (event, isEditing, allDestinations, currentOffers
                 </button>`
     : ''}
               </header>
+
+              <section class="event__errors">
+                <div class="event__error" style="visibility: ${isError ? 'visible' : 'hidden'}">${errorText}</div>
+              </section>
+
               <section class="event__details">
                 ${currentOffers.length ? `<section class="event__section  event__section--offers">
                   <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -144,6 +150,7 @@ export default class EditEventView extends SmartView {
     isDisabled: false,
     isSaving: false,
     isDeleting: false,
+    isError: false,
   });
 
   static parseDataToEvent = (data) => {
@@ -152,6 +159,7 @@ export default class EditEventView extends SmartView {
     delete event.isDisabled;
     delete event.isSaving;
     delete event.isDeleting;
+    delete event.isError;
 
     return event;
   }

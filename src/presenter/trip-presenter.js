@@ -148,9 +148,13 @@ export default class TripPresenter {
       case UserAction.ADD_EVENT:
         this.#newEventPresenter.setSaving();
         try {
-          await this.#pointsModel.addEvent(updateType, update);
-          this.#newEventPresenter.destroy();
-          this.#handleNewEventFormClose();
+          if(!update.destination || !update.price || !update.finishDate || !update.startDate) {
+            this.#newEventPresenter.setAborting();
+          } else {
+            await this.#pointsModel.addEvent(updateType, update);
+            this.#newEventPresenter.destroy();
+            this.#handleNewEventFormClose();
+          }
         } catch(err) {
           this.#newEventPresenter.setAborting();
         }
