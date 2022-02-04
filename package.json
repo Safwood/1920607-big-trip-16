@@ -6,9 +6,10 @@
   "homepage": "https://safwood.github.io/1920607-big-trip-16/",
   "scripts": {
     "start": "webpack serve --open --mode development",
-    "build": "webpack --mode development",
+    "build": "webpack --mode production",
     "eslint": "eslint src/",
-    "test": "npm run eslint"
+    "test": "npm run eslint",
+    "deploy": "gh-pages -d public"
   },
   "devDependencies": {
     "@babel/core": "7.16.0",

@@ -1,4 +1,5 @@
 # Проект «Большое путешествие»
+[Deploy](https://safwood.github.io/1920607-big-trip-16/)
 
 Данное приложение помогает удобно строить маршрут своего путешествия и подсчитывать бюджет. 
 
@@ -27,6 +28,7 @@
 English version
 
 # Project «Big trip»
+[Deploy](https://safwood.github.io/1920607-big-trip-16/)
 
 This application helps easily to build a route of your trip and count the budget. 
 
